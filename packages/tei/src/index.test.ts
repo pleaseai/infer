@@ -1,22 +1,13 @@
+import type {
+  PortRange,
+} from './index'
 import { describe, expect, it } from 'bun:test'
 import {
-  TeiManager,
-  TeiClient,
-  PortPool,
-  findTeiBinary,
   createTeiManager,
-} from './index'
-import type {
-  TeiProcess,
-  TeiProcessState,
-  TeiManagerOptions,
-  EmbedRequest,
-  EmbedResponse,
-  RerankRequest,
-  RerankResponse,
-  RerankResult,
-  TeiClientOptions,
-  PortRange,
+  findTeiBinary,
+  PortPool,
+  TeiClient,
+  TeiManager,
 } from './index'
 
 describe('barrel index exports', () => {

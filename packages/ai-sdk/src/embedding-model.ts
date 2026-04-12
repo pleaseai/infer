@@ -1,5 +1,6 @@
 import type { EmbeddingModelV1 } from '@ai-sdk/provider'
-import { TeiManager, TeiClient } from '@infer-please/tei'
+import type { TeiManager } from '@infer-please/tei'
+import { TeiClient } from '@infer-please/tei'
 
 /**
  * Implements the Vercel AI SDK EmbeddingModelV1<string> interface backed by
@@ -25,11 +26,11 @@ export class InferPleaseEmbeddingModel implements EmbeddingModelV1<string> {
     values: string[]
     abortSignal?: AbortSignal
     headers?: Record<string, string | undefined>
-  }): Promise<{ embeddings: number[][]; usage?: { tokens: number } }> {
+  }): Promise<{ embeddings: number[][], usage?: { tokens: number } }> {
     const proc = await this.manager.ensureRunning(this.modelId)
 
-    const client =
-      this.clientOverride ?? new TeiClient({ baseUrl: `http://localhost:${proc.port}` })
+    const client
+      = this.clientOverride ?? new TeiClient({ baseUrl: `http://localhost:${proc.port}` })
 
     const embeddings = await client.embed({ inputs: options.values })
 

@@ -57,7 +57,7 @@ User Code
 - [x] (2026-04-12 17:00 KST) T006 TEI HTTP 클라이언트 — embed, rerank 호출 (file: packages/tei/src/tei-client.ts) (depends on T002)
 - [x] (2026-04-12 KST) T007 Public API — createTeiManager, embed, rerank export (file: packages/tei/src/index.ts) (depends on T005, T006)
 - [x] (2026-04-12 KST) T008 AI SDK EmbeddingModel 구현 (file: packages/ai-sdk/src/embedding-model.ts) (depends on T007)
-- [ ] T009 AI SDK provider factory — createInferPlease() (file: packages/ai-sdk/src/index.ts) (depends on T008)
+- [x] (2026-04-12 KST) T009 AI SDK provider factory — createInferPlease() (file: packages/ai-sdk/src/index.ts) (depends on T008)
 
 ## Key Files
 

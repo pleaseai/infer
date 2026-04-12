@@ -1,6 +1,6 @@
+import type { TeiClient, TeiManager } from '@infer-please/tei'
 import { describe, expect, it, mock } from 'bun:test'
 import { InferPleaseEmbeddingModel } from './embedding-model'
-import type { TeiManager, TeiClient } from '@infer-please/tei'
 
 function makeManager(port: number): TeiManager {
   return {
@@ -87,7 +87,6 @@ describe('InferPleaseEmbeddingModel', () => {
 
     it('creates TeiClient with correct baseUrl from port', async () => {
       const manager = makeManager(9000)
-      const expectedEmbeddings = [[0.5, 0.6]]
       // No pre-built client — model should construct one using manager's port
       const model = new InferPleaseEmbeddingModel('my-model', manager)
 

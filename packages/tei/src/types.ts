@@ -1,12 +1,12 @@
 /**
  * State of a TEI (Text Embeddings Inference) process.
  */
-export type TeiProcessState =
-  | 'starting'
-  | 'ready'
-  | 'stopping'
-  | 'stopped'
-  | 'crashed'
+export type TeiProcessState
+  = | 'starting'
+    | 'ready'
+    | 'stopping'
+    | 'stopped'
+    | 'crashed'
 
 /**
  * Tracks a single TEI process instance.

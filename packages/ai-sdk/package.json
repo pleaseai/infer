@@ -12,17 +12,17 @@
     "check-types": "tsc --noEmit",
     "test": "bun test"
   },
+  "peerDependencies": {
+    "ai": "^4"
+  },
   "dependencies": {
     "@ai-sdk/provider": "^1",
     "@infer-please/tei": "workspace:*"
   },
-  "peerDependencies": {
-    "ai": "^4"
-  },
   "devDependencies": {
     "@pleaseai/eslint-config": "latest",
-    "bun-types": "latest",
     "ai": "^4",
+    "bun-types": "latest",
     "eslint": "^9",
     "typescript": "^5"
   }

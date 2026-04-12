@@ -38,6 +38,7 @@
       "devDependencies": {
         "@infer-please/ai-sdk": "workspace:*",
         "@pleaseai/eslint-config": "latest",
+        "bun-types": "latest",
         "eslint": "^9",
         "typescript": "^5",
       },

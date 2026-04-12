@@ -1,4 +1,3 @@
-import { describe, expect, it } from 'bun:test'
 import type {
   EmbedRequest,
   EmbedResponse,
@@ -9,6 +8,7 @@ import type {
   TeiProcess,
   TeiProcessState,
 } from './types'
+import { describe, expect, it } from 'bun:test'
 
 describe('TeiProcessState', () => {
   it('should accept valid states', () => {

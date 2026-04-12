@@ -1,6 +1,6 @@
+import type { EmbedRequest, RerankRequest } from './types'
 import { describe, expect, it, mock } from 'bun:test'
 import { TeiClient } from './tei-client'
-import type { EmbedRequest, RerankRequest } from './types'
 
 function makeFetch(response: unknown, ok = true, status = 200): typeof fetch {
   return mock(async (_url: string | URL | Request, _init?: RequestInit) => {

@@ -2,10 +2,10 @@
   "compilerOptions": {
     "target": "ESNext",
     "lib": ["ESNext", "DOM"],
-    "types": ["bun-types"],
     "rootDir": "src",
     "module": "ESNext",
     "moduleResolution": "bundler",
+    "types": ["bun-types"],
     "strict": true,
     "declaration": true,
     "declarationMap": true,

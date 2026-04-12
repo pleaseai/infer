@@ -1,10 +1,10 @@
-import { afterEach, beforeEach, describe, expect, it, mock } from 'bun:test'
 import type { TeiProcess } from './types'
+import { afterEach, beforeEach, describe, expect, it, mock } from 'bun:test'
 import { TeiManager } from './tei-manager'
 
 // ---- helpers ----------------------------------------------------------------
 
-type SubprocessMock = {
+interface SubprocessMock {
   pid: number
   exitCode: number | null
   killed: boolean
@@ -21,7 +21,7 @@ function makeSubprocess(pid = 1234): SubprocessMock {
     exitCode: null,
     killed: false,
     exited: new Promise<number>((resolve) => {
-      onExit = (code) => resolve(code)
+      onExit = code => resolve(code)
     }),
     kill: () => {
       sub.killed = true
@@ -160,7 +160,7 @@ describe('TeiManager', () => {
     expect(proc.state).toBe('ready')
 
     // Wait for idle timeout to fire
-    await new Promise((r) => setTimeout(r, 150))
+    await new Promise(r => setTimeout(r, 150))
 
     expect(proc.state).toBe('stopped')
     expect(sub.killed).toBe(true)
@@ -214,7 +214,7 @@ describe('TeiManager', () => {
     // Simulate unexpected crash (not via manager.stop)
     sub.triggerExit(1)
     // Give event loop a tick
-    await new Promise((r) => setTimeout(r, 10))
+    await new Promise(r => setTimeout(r, 10))
 
     expect(proc.state).toBe('crashed')
 
@@ -329,7 +329,8 @@ describe('TeiManager', () => {
       if (urlStr.endsWith('/health')) {
         healthCalls++
         // Only succeed after 3 polls
-        if (healthCalls >= 3) return { ok: true, status: 200 } as Response
+        if (healthCalls >= 3)
+          return { ok: true, status: 200 } as Response
         return { ok: false, status: 503 } as Response
       }
       return { ok: false, status: 404 } as Response

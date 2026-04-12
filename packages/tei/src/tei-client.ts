@@ -6,6 +6,8 @@ import type {
   TeiClientOptions,
 } from './types'
 
+const TRAILING_SLASH_RE = /\/$/
+
 /**
  * HTTP client for interacting with a running TEI (Text Embeddings Inference) instance.
  */
@@ -14,7 +16,7 @@ export class TeiClient {
   private readonly fetchFn: typeof fetch
 
   constructor(options: TeiClientOptions, fetchFn: typeof fetch = globalThis.fetch) {
-    this.baseUrl = options.baseUrl.replace(/\/$/, '')
+    this.baseUrl = options.baseUrl.replace(TRAILING_SLASH_RE, '')
     this.fetchFn = fetchFn
   }
 

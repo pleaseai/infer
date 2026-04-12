@@ -1,6 +1,6 @@
+import type { TeiManagerOptions, TeiProcess, TeiProcessState } from './types'
 import { findTeiBinary } from './binary'
 import { PortPool } from './port-pool'
-import type { TeiManagerOptions, TeiProcess, TeiProcessState } from './types'
 
 // ---- types ------------------------------------------------------------------
 
@@ -80,7 +80,8 @@ export class TeiManager {
 
   async stop(modelId: string): Promise<void> {
     const proc = this.processes.get(modelId)
-    if (!proc) return
+    if (!proc)
+      return
 
     this.clearIdleTimer(proc)
     proc.state = 'stopping'
@@ -97,7 +98,7 @@ export class TeiManager {
 
   async stopAll(): Promise<void> {
     const modelIds = Array.from(this.processes.keys())
-    await Promise.all(modelIds.map((id) => this.stop(id)))
+    await Promise.all(modelIds.map(id => this.stop(id)))
   }
 
   getProcesses(): TeiProcess[] {
@@ -133,11 +134,12 @@ export class TeiManager {
       if (current && current.state === 'ready') {
         current.state = 'crashed'
         this.clearIdleTimer(current)
-      } else if (current && current.state === 'starting') {
+      }
+      else if (current && current.state === 'starting') {
         // Health check will handle the timeout / rejection
         current.state = 'crashed'
         const err = new Error(`Process for ${modelId} exited with code ${code} before becoming ready`)
-        current.readyRejectors.forEach((reject) => reject(err))
+        current.readyRejectors.forEach(reject => reject(err))
         current.readyResolvers = []
         current.readyRejectors = []
       }
@@ -147,7 +149,8 @@ export class TeiManager {
 
     try {
       await this.waitForHealthy(proc)
-    } catch (err) {
+    }
+    catch (err) {
       // Cleanup on health check failure
       this.clearIdleTimer(proc)
       if (proc.subprocess) {
@@ -162,7 +165,7 @@ export class TeiManager {
     this.resetIdleTimer(proc)
 
     // Resolve any waiters
-    proc.readyResolvers.forEach((resolve) => resolve(proc))
+    proc.readyResolvers.forEach(resolve => resolve(proc))
     proc.readyResolvers = []
     proc.readyRejectors = []
 
@@ -184,8 +187,10 @@ export class TeiManager {
     while (Date.now() < deadline) {
       try {
         const res = await this.fetchFn(url)
-        if (res.ok) return
-      } catch {
+        if (res.ok)
+          return
+      }
+      catch {
         // fetch failed (connection refused) — keep polling
       }
 
@@ -215,5 +220,5 @@ export class TeiManager {
 // ---- utilities --------------------------------------------------------------
 
 function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms))
+  return new Promise(resolve => setTimeout(resolve, ms))
 }
