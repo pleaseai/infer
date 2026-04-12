@@ -1,0 +1,28 @@
+packages/tei/package.json
+  269d1b187da4fa94 1-22
+packages/tei/tsconfig.json
+  269d1b187da4fa94 1-19
+packages/tei/src/index.ts
+  269d1b187da4fa94 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "847e5dbb35ac60042188b1a79632a2d9031c51a0",
+  "prompts": {
+    "269d1b187da4fa94": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "14a5a30a-d25b-4854-89ec-abb6ab6b007d",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 127,
+      "total_deletions": 0,
+      "accepted_lines": 417,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/6d516f696667b60eba29c596c488b177c79291cee1cda2c69794af9c6a21711e"
+    }
+  }
+}
