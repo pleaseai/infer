@@ -13,6 +13,7 @@
 | Embedding/Rerank Engine | **HuggingFace TEI** | Rust-based, Flash Attention, dynamic batching, supports both embedding and reranking |
 | Chat Engine | **llama.cpp server** | C++ inference, broad GGUF model support, CPU/GPU flexible |
 | Client SDK | **Vercel AI SDK** | Standard AI SDK for TypeScript, provider pattern |
+| AI SDK Provider | **@ai-sdk/provider** | Vercel AI SDK EmbeddingModelV1 인터페이스 |
 
 ## Project Structure
 | Type | Description |
@@ -29,6 +30,7 @@
 | Package | Name | Purpose |
 |---------|------|---------|
 | `packages/server` | `infer-please` | CLI + HTTP server (Hono), TEI/llama process management |
+| `packages/tei` | `@infer-please/tei` | TEI 프로세스 관리 + API 클라이언트 |
 | `packages/ai-sdk` | `@infer-please/ai-sdk` | Vercel AI SDK provider |
 
 ## External Binaries (managed, not bundled)
