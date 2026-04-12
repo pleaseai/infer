@@ -1,0 +1,54 @@
+.please/docs/tracks/active/tei-integration-20260412/metadata.json
+  269d1b187da4fa94 4
+.please/docs/tracks.jsonl
+  269d1b187da4fa94 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "c832eb7f2fc91a0184000ab39ac844d127e60a38",
+  "prompts": {
+    "269d1b187da4fa94": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "14a5a30a-d25b-4854-89ec-abb6ab6b007d",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 291,
+      "total_deletions": 1,
+      "accepted_lines": 292,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/5e25675330f6e50f4bb6c920cb27fb0aa31b8fcfdd7e32d45b2eaf1fbe589726"
+    },
+    "59d4936f369d7f99": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6be0e3fa-b774-4746-8506-f541f989d949",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 0,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/39edb237ef962d662d5a2d69e3acd51059f64963b24ad52ac77708cff11653f9"
+    },
+    "ead506bae07090c9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "692bb9fb-6e49-4c94-b195-17f889f72566",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 0,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/1fb020751c1a7fe102cdba7b6af9fcf8a2b0ca83d0dab55a415d79004dbfaaa7"
+    }
+  }
+}
