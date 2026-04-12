@@ -1,0 +1,30 @@
+packages/ai-sdk/package.json
+  269d1b187da4fa94 15-18,24
+packages/ai-sdk/tsconfig.json
+  269d1b187da4fa94 4-5
+packages/ai-sdk/src/embedding-model.ts
+  269d1b187da4fa94 1-38
+packages/ai-sdk/src/embedding-model.test.ts
+  269d1b187da4fa94 1-116
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "e96b7feab1e388bf9220bf63ef42dd0cbd659747",
+  "prompts": {
+    "269d1b187da4fa94": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "14a5a30a-d25b-4854-89ec-abb6ab6b007d",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 165,
+      "total_deletions": 5,
+      "accepted_lines": 457,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/56e1ca5c1474172ca37ffd361146e7b55435f443a0d3bc96b475f78f937341dd"
+    }
+  }
+}
