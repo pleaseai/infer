@@ -1,0 +1,36 @@
+.please/docs/references/tei-supported-models.md
+  59d4936f369d7f99 1-76
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "d7263b356e80c5c22405bfa247f57d94c6a9a381",
+  "prompts": {
+    "59d4936f369d7f99": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6be0e3fa-b774-4746-8506-f541f989d949",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 76,
+      "total_deletions": 0,
+      "accepted_lines": 94,
+      "overriden_lines": 0
+    },
+    "ead506bae07090c9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "692bb9fb-6e49-4c94-b195-17f889f72566",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 0,
+      "total_deletions": 0,
+      "accepted_lines": 272,
+      "overriden_lines": 0
+    }
+  }
+}
