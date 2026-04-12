@@ -28,23 +28,28 @@ Dependencies flow downward only. Lower layers must not import upper layers.
 
 ```
 ┌─────────────────────────────────────────────────┐
-│              Interface Layer                     │
-│  CLI (index.ts) + HTTP API (Hono routes)        │
-│  /v1/embeddings, /v1/rerank, /v1/chat, /v1/models │
+│              User Code Layer                     │
+│  AI SDK: embed(), embedMany()                    │
+│  Direct: createTeiManager(), client.embed()      │
 ├─────────────────────────────────────────────────┤
-│            Application Layer                     │
-│  Router — model name → backend dispatch          │
-│  Request/response transformation (OpenAI ↔ TEI)  │
+│            SDK Adapter Layer                     │
+│  @infer-please/ai-sdk                            │
+│  EmbeddingModelV1 → TeiManager + TeiClient       │
 ├─────────────────────────────────────────────────┤
-│              Domain Layer                        │
-│  TEI Manager — process lifecycle, health, pool   │
-│  Llama Manager — process lifecycle, health       │
-│  Model registry — loaded models, port allocation │
+│              Core Layer                          │
+│  @infer-please/tei                               │
+│  TeiManager — process lifecycle, health, pool    │
+│  TeiClient — TEI HTTP API (embed, rerank)        │
+│  PortPool — dynamic port allocation              │
 ├─────────────────────────────────────────────────┤
 │           Infrastructure Layer                   │
 │  Bun.spawn() — external process management       │
-│  HuggingFace Hub — model downloading             │
-│  File system — config, model cache               │
+│  HuggingFace Hub — model downloading (by TEI)    │
+│  fetch — HTTP to TEI process (localhost)          │
+├─────────────────────────────────────────────────┤
+│           Interface Layer (planned)              │
+│  CLI (infer-please) + HTTP API (Hono routes)     │
+│  /v1/embeddings, /v1/rerank, /v1/models          │
 └─────────────────────────────────────────────────┘
 ```
 
@@ -52,24 +57,20 @@ Dependencies flow downward only. Lower layers must not import upper layers.
 
 ## Entry Points
 
-For understanding the HTTP API:
+For understanding TEI process management:
 
-- `packages/server/src/server.ts` — Hono app setup, route registration, middleware
-- `packages/server/src/routes/embeddings.ts` — `/v1/embeddings` handler (most common request path)
-- `packages/server/src/routes/rerank.ts` — `/v1/rerank` handler (key differentiator)
-
-For understanding process management:
-
-- `packages/server/src/tei-manager.ts` — TEI process lifecycle: spawn, health check, idle timeout, port allocation
-- `packages/server/src/llama-manager.ts` — llama-server process lifecycle
-
-For understanding the routing layer:
-
-- `packages/server/src/router.ts` — Model name → backend type resolution and dispatch
+- `packages/tei/src/tei-manager.ts` — TEI process lifecycle: spawn, health check, idle timeout, port allocation, crash recovery
+- `packages/tei/src/tei-client.ts` — TEI HTTP API calls (embed, rerank)
+- `packages/tei/src/index.ts` — `createTeiManager()` factory + barrel exports
 
 For the Vercel AI SDK integration:
 
 - `packages/ai-sdk/src/index.ts` — `createInferPlease()` provider factory
+- `packages/ai-sdk/src/embedding-model.ts` — `EmbeddingModelV1<string>` implementation
+
+For the HTTP API (planned):
+
+- `packages/server/src/index.ts` — CLI entry point (skeleton)
 
 ## Module Reference
 
@@ -77,36 +78,46 @@ For the Vercel AI SDK integration:
 
 | Package | npm Name | Purpose | Key Entry |
 |---------|----------|---------|-----------|
-| `packages/server` | `infer-please` | CLI + HTTP server + process managers | `src/index.ts` |
-| `packages/ai-sdk` | `@infer-please/ai-sdk` | Vercel AI SDK provider | `src/index.ts` |
+| `packages/tei` | `@infer-please/tei` | TEI process management + API client | `src/index.ts` |
+| `packages/ai-sdk` | `@infer-please/ai-sdk` | Vercel AI SDK provider (wraps tei) | `src/index.ts` |
+| `packages/server` | `infer-please` | CLI + HTTP server (planned) | `src/index.ts` |
 
-### Server Internal Modules
+### TEI Package Modules (`@infer-please/tei`)
+
+| Module | Purpose | Depends On | Depended By |
+|--------|---------|-----------|-------------|
+| `src/index.ts` | Barrel export + `createTeiManager()` factory | all modules | `@infer-please/ai-sdk` |
+| `src/tei-manager.ts` | TEI process lifecycle (spawn, health check, idle timeout, crash recovery) | `binary`, `port-pool`, `types` | `index` |
+| `src/tei-client.ts` | TEI HTTP API client (embed, rerank) | `types` | `index`, `ai-sdk` |
+| `src/port-pool.ts` | Dynamic port allocation/release (Set-based) | — | `tei-manager` |
+| `src/binary.ts` | `text-embeddings-router` binary discovery on $PATH | — | `tei-manager` |
+| `src/types.ts` | Type definitions (TeiProcess, EmbedRequest, etc.) | — | all modules |
+
+### AI SDK Package Modules (`@infer-please/ai-sdk`)
+
+| Module | Purpose | Depends On | Depended By |
+|--------|---------|-----------|-------------|
+| `src/index.ts` | `createInferPlease()` provider factory | `embedding-model`, `@infer-please/tei` | user code |
+| `src/embedding-model.ts` | `EmbeddingModelV1<string>` implementation | `@infer-please/tei` | `index` |
+
+### Server Internal Modules (planned)
 
 | Module | Purpose | Depends On | Depended By |
 |--------|---------|-----------|-------------|
 | `src/index.ts` | CLI entry point, starts server | `server.ts` | — |
-| `src/server.ts` | Hono HTTP app, route wiring | `routes/*` | `index.ts` |
-| `src/router.ts` | Model → backend routing logic | `tei-manager`, `llama-manager` | `routes/*` |
-| `src/tei-manager.ts` | TEI process lifecycle (spawn, health, idle, port pool) | `Bun.spawn` | `router`, `providers/tei` |
-| `src/llama-manager.ts` | llama-server process lifecycle | `Bun.spawn` | `router`, `providers/llama-server` |
-| `src/providers/tei.ts` | TEI HTTP proxy (embed + rerank) | `tei-manager` | `routes/embeddings`, `routes/rerank` |
-| `src/providers/llama-server.ts` | llama.cpp server HTTP proxy (chat) | `llama-manager` | `routes/chat` |
-| `src/routes/embeddings.ts` | `POST /v1/embeddings` | `providers/tei` | `server` |
-| `src/routes/rerank.ts` | `POST /v1/rerank` | `providers/tei` | `server` |
-| `src/routes/chat.ts` | `POST /v1/chat/completions` | `providers/llama-server` | `server` |
-| `src/routes/models.ts` | `GET /v1/models`, `DELETE /v1/models/:id` | `tei-manager`, `llama-manager` | `server` |
+| `src/server.ts` | Hono HTTP app, route wiring | `routes/*`, `@infer-please/tei` | `index.ts` |
 
 ## Architecture Invariants
 
-**Single responsibility for backends**: Each backend type (TEI, llama.cpp) has exactly one manager module. All process lifecycle logic (spawn, kill, health check, port allocation) lives in the manager. Do NOT scatter `Bun.spawn()` calls across route handlers or providers.
+**Single responsibility for backends**: Each backend type (TEI, llama.cpp) has exactly one dedicated package. TEI process lifecycle lives in `@infer-please/tei`. All `Bun.spawn()` calls for TEI are in `TeiManager`. Do NOT scatter spawn calls across route handlers or SDK adapters.
 
-**OpenAI API compatibility at the boundary**: All HTTP responses must conform to OpenAI API response shapes. Internal backend protocols (TEI REST API, llama.cpp API) are translated in the provider layer, never exposed to callers.
+**OpenAI API compatibility at the boundary**: When the HTTP server is implemented, all HTTP responses must conform to OpenAI API response shapes. Internal backend protocols (TEI REST API) are translated in the provider/client layer, never exposed to callers.
 
 **One process per model**: Each model name maps to exactly one backend process. Do NOT multiplex multiple models into a single TEI instance — TEI only supports one model per process.
 
 **No bundled binaries**: TEI and llama.cpp binaries are external prerequisites. Do NOT attempt to bundle, download, or compile these binaries as part of the build. The server should fail fast with a clear error if a required binary is not found on `$PATH`.
 
-**Port pool isolation**: Backend processes use ports from a configured range (default: 8080-8099 for TEI, 8090+ for llama). The manager allocates and reclaims ports. Do NOT hardcode port numbers in routes or providers.
+**Port pool isolation**: Backend processes use ports from a configured range (default: 8080-8099 for TEI). The `PortPool` class in `@infer-please/tei` allocates and reclaims ports. Do NOT hardcode port numbers in routes or SDK adapters.
 
 ## Cross-Cutting Concerns
 
@@ -114,7 +125,7 @@ For the Vercel AI SDK integration:
 
 **Logging**: Use structured logging to stdout. Log process lifecycle events (spawn, ready, idle-stop, crash) at info level. Log request routing at debug level.
 
-**Testing**: Bun test runner (`bun test`). Unit tests for routing logic and manager state machines. Integration tests mock `Bun.spawn()` to avoid requiring actual TEI/llama binaries. Coverage target: >80% for new code.
+**Testing**: Bun test runner (`bun test`). Unit tests use dependency injection — `TeiManager` accepts injectable `spawnFn`, `fetchFn`, and `findBinary` functions. `TeiClient` accepts injectable `fetchFn`. No real TEI/llama binaries required for tests. Coverage target: >80% for new code.
 
 **Configuration**: Optional `infer-please.yaml` at project root. Environment variables override config file values. Sensible defaults for all settings (port 3141, idle timeout 300s).
 
@@ -130,6 +141,6 @@ For the Vercel AI SDK integration:
 
 ---
 
-_Last updated: 2026-04-12_
+_Last updated: 2026-04-13_
 
 _Key ADRs: None yet — use `/standards:adr` to record architectural decisions._
