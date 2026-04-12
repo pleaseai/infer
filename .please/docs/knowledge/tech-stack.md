@@ -1,0 +1,41 @@
+# Tech Stack
+
+## Runtime & Language
+| Technology | Choice | Rationale |
+|-----------|--------|-----------|
+| Runtime | **Bun** | Fast startup, native TypeScript, `Bun.spawn()` for process management |
+| Language | **TypeScript** | Type safety, ecosystem compatibility |
+
+## Core Dependencies
+| Category | Technology | Rationale |
+|----------|-----------|-----------|
+| HTTP Framework | **Hono** | Lightweight, fast, Bun-native, middleware ecosystem |
+| Embedding/Rerank Engine | **HuggingFace TEI** | Rust-based, Flash Attention, dynamic batching, supports both embedding and reranking |
+| Chat Engine | **llama.cpp server** | C++ inference, broad GGUF model support, CPU/GPU flexible |
+| Client SDK | **Vercel AI SDK** | Standard AI SDK for TypeScript, provider pattern |
+
+## Project Structure
+| Type | Description |
+|------|------------|
+| Monorepo | Turborepo + Bun workspaces |
+| Package Manager | Bun |
+| Build System | Turborepo (task orchestration, caching) |
+| Build (server) | `bun build` (bundler) |
+| Build (ai-sdk) | `tsc` (compiled package) |
+| Testing | Bun test runner (`bun test`) |
+| Linting/Formatting | `@pleaseai/eslint-config` (ESLint as formatter, no Prettier) |
+
+## Monorepo Packages
+| Package | Name | Purpose |
+|---------|------|---------|
+| `packages/server` | `infer-please` | CLI + HTTP server (Hono), TEI/llama process management |
+| `packages/ai-sdk` | `@infer-please/ai-sdk` | Vercel AI SDK provider |
+
+## External Binaries (managed, not bundled)
+- `text-embeddings-router` — TEI binary (installed via Homebrew or Docker)
+- `llama-server` — llama.cpp server binary (installed via Homebrew)
+
+## Deployment Targets
+- macOS (primary — Apple Silicon + Intel)
+- Linux (server deployments)
+- Docker (optional TEI mode)

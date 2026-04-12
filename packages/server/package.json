@@ -1,0 +1,28 @@
+{
+  "name": "infer-please",
+  "type": "module",
+  "version": "0.0.0",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "bin": {
+    "infer-please": "./dist/index.js"
+  },
+  "scripts": {
+    "build": "bun build src/index.ts --outdir dist --target bun",
+    "dev": "bun run --watch src/index.ts",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "check-types": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "hono": "^4"
+  },
+  "devDependencies": {
+    "@infer-please/ai-sdk": "workspace:*",
+    "@pleaseai/eslint-config": "latest",
+    "eslint": "^9",
+    "typescript": "^5"
+  }
+}

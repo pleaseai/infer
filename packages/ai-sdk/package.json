@@ -1,0 +1,24 @@
+{
+  "name": "@infer-please/ai-sdk",
+  "type": "module",
+  "version": "0.0.0",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "tsc",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "check-types": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "peerDependencies": {
+    "ai": "^4"
+  },
+  "devDependencies": {
+    "@pleaseai/eslint-config": "latest",
+    "ai": "^4",
+    "eslint": "^9",
+    "typescript": "^5"
+  }
+}
