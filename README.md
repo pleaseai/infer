@@ -1,75 +1,108 @@
 # infer-please
 
-> 추론해줘 — Local AI inference server for models that Ollama doesn't support.
+> 추론해줘 — Local AI Gateway with reranking. Like Vercel AI Gateway, but runs on your machine.
 
-Run HuggingFace models locally via **Transformers.js** (ONNX) and **node-llama-cpp** (GGUF) with a single command.
+A single OpenAI-compatible endpoint that manages multiple [TEI](https://github.com/huggingface/text-embeddings-inference) and [llama.cpp](https://github.com/ggml-org/llama.cpp) processes for you. Request any model by name — it starts, serves, and stops automatically.
 
 ## Why?
 
-Ollama is great, but it doesn't cover everything — embedding models like `jina-embeddings-v3`, rerankers like `bge-reranker-v2`, or niche ONNX-only architectures. **infer-please** fills that gap: a lightweight local server that dynamically loads and caches any supported model on first request.
+Cloud embedding APIs are cheap ($0.02/M tokens). Use them when you can.
 
-## Features
+But when you need **reranking**, **privacy**, or **offline** — there's no single tool that does it all:
 
-- **Dynamic model loading** — request any model by name, loaded and cached on first use
-- **Multi-backend** — Transformers.js (ONNX) + node-llama-cpp (GGUF)
-- **OpenAI-compatible API** — drop-in replacement for `/v1/embeddings`, `/v1/chat/completions`
-- **Reranking** — `/v1/rerank` endpoint for retrieval pipelines
-- **Memory management** — list loaded models, unload on demand
-- **Zero config** — `bunx infer-please` and you're running
+| Tool | Embedding | Reranker | Chat | Multi-model | Dynamic loading |
+|------|-----------|----------|------|-------------|-----------------|
+| Vercel AI Gateway | ✅ | ❌ | ✅ | ✅ | ✅ |
+| Workers AI | ✅ | ❌ | ✅ | ⚠️ fixed set | ❌ |
+| HF TEI | ✅ | ✅ | ❌ | ❌ 1 per process | ❌ |
+| Ollama | ✅ | ❌ | ✅ | ✅ | ✅ |
+| vLLM | ✅ | ✅ | ✅ | ❌ | ❌ |
+| **infer-please** | ✅ | ✅ | ✅ | ✅ | ✅ |
+
+infer-please wraps TEI (Rust, Flash Attention, dynamic batching) for embedding/reranking and llama.cpp server for chat — behind one port, with automatic lifecycle management. All backends are external Rust/C++ binaries managed via `Bun.spawn()`.
 
 ## Quick Start
 
 ```bash
+# Prerequisites
+brew install text-embeddings-inference  # or Docker
+brew install llama.cpp                  # for chat (optional)
+
 # Install
 bun add -g infer-please
 
-# Start server
-ip start
-
-# Or just run directly
-bunx infer-please
+# Start
+infer-please start
+# Server running on http://localhost:3141
 ```
 
-Server starts on `http://localhost:3141`.
+## Usage
 
-## API
+### OpenAI SDK (any language)
 
-### Embeddings
+```typescript
+import OpenAI from "openai";
 
-```bash
-curl -X POST http://localhost:3141/v1/embeddings \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "Xenova/all-MiniLM-L6-v2",
-    "input": ["Hello world", "How are you?"]
-  }'
+const client = new OpenAI({
+  baseURL: "http://localhost:3141/v1",
+  apiKey: "not-needed",
+});
+
+// Embedding — first request starts TEI automatically
+const embed = await client.embeddings.create({
+  model: "BAAI/bge-small-en-v1.5",
+  input: ["hello world", "how are you?"],
+});
+
+// Different model — new TEI instance spins up
+const embed2 = await client.embeddings.create({
+  model: "Qwen/Qwen3-Embedding-0.6B",
+  input: ["你好世界"],
+});
+
+// Chat — routes to node-llama-cpp
+const chat = await client.chat.completions.create({
+  model: "bartowski/Llama-3.2-1B-Instruct-GGUF",
+  messages: [{ role: "user", content: "Hello!" }],
+});
 ```
 
-### Rerank
+### Vercel AI SDK
+
+```typescript
+import { embed, embedMany, generateText } from "ai";
+import { createInferPlease } from "@infer-please/ai-sdk";
+
+const infer = createInferPlease(); // defaults to localhost:3141
+
+const { embedding } = await embed({
+  model: infer.textEmbeddingModel("BAAI/bge-small-en-v1.5"),
+  value: "hello world",
+});
+
+const { embeddings } = await embedMany({
+  model: infer.textEmbeddingModel("Qwen/Qwen3-Embedding-0.6B"),
+  values: ["hello", "world"],
+});
+
+const { text } = await generateText({
+  model: infer.languageModel("bartowski/Qwen2.5-3B-Instruct-GGUF"),
+  prompt: "Explain transformers",
+});
+```
+
+### Reranking
 
 ```bash
 curl -X POST http://localhost:3141/v1/rerank \
   -H "Content-Type: application/json" \
   -d '{
-    "model": "Xenova/ms-marco-MiniLM-L-6-v2",
+    "model": "BAAI/bge-reranker-large",
     "query": "What is deep learning?",
     "documents": [
       "Deep learning is a subset of machine learning",
       "The weather is sunny today",
       "Neural networks have multiple layers"
-    ]
-  }'
-```
-
-### Chat Completions (via node-llama-cpp)
-
-```bash
-curl -X POST http://localhost:3141/v1/chat/completions \
-  -H "Content-Type: application/json" \
-  -d '{
-    "model": "bartowski/Llama-3.2-1B-Instruct-GGUF",
-    "messages": [
-      { "role": "user", "content": "Hello!" }
     ]
   }'
 ```
@@ -80,59 +113,128 @@ curl -X POST http://localhost:3141/v1/chat/completions \
 # List loaded models
 curl http://localhost:3141/v1/models
 
-# Unload a model
-curl -X DELETE http://localhost:3141/v1/models/feature-extraction/Xenova/all-MiniLM-L6-v2
+# Unload a model (frees memory)
+curl -X DELETE http://localhost:3141/v1/models/BAAI/bge-small-en-v1.5
 ```
+
+### Use with QMD
+
+```bash
+# QMD uses OpenAI-compatible API — just point it at infer-please
+export OPENAI_BASE_URL="http://localhost:3141/v1"
+export OPENAI_API_KEY="not-needed"
+qmd embed && qmd query "search something"
+```
+
+## How It Works
+
+```
+Client (OpenAI SDK / Vercel AI SDK / curl)
+  │
+  │  POST /v1/embeddings   { "model": "BAAI/bge-small-en-v1.5" }
+  │  POST /v1/rerank        { "model": "BAAI/bge-reranker-large" }
+  │  POST /v1/chat/completions { "model": "...-GGUF" }
+  │
+  ▼
+infer-please (:3141)
+  │
+  │  Route by model + task
+  │
+  ├── ONNX model → TEI process (auto-spawned)
+  │   ├── BAAI/bge-small-en-v1.5    → :8080
+  │   ├── BAAI/bge-reranker-large   → :8081
+  │   └── Qwen/Qwen3-Embedding-0.6B → :8082 (started on first request)
+  │
+  └── GGUF model → llama-server process (auto-spawned)
+      └── bartowski/Llama-3.2-1B-Instruct-GGUF → :8090
+
+  ⏱️ Idle 5min → TEI process auto-stopped
+  📡 Next request → TEI process auto-restarted (~1s)
+```
+
+## When to Use What
+
+| Scenario | Recommendation |
+|----------|---------------|
+| Embedding only, no infra | ☁️ **Vercel AI Gateway** ($0.02/M tokens) |
+| Embedding only, Cloudflare stack | ☁️ **Workers AI** (~free) |
+| **Embedding + Reranking** | 🖥️ **infer-please** |
+| Hybrid search pipeline (QMD-like) | 🖥️ **infer-please** |
+| Privacy / air-gapped | 🖥️ **infer-please** |
+| Low latency (<10ms) | 🖥️ **infer-please** |
+| Flexible — cloud first, local fallback | 🖥️ **@infer-please/ai-sdk** |
+
+## Popular Models
+
+### Embedding
+
+| Model | Dims | Speed | Notes |
+|-------|------|-------|-------|
+| `BAAI/bge-small-en-v1.5` | 384 | ⚡ | Good default, English |
+| `BAAI/bge-large-en-v1.5` | 1024 | ⚡ | Higher quality |
+| `Qwen/Qwen3-Embedding-0.6B` | — | ⚡ | Multilingual, 119 languages |
+| `nomic-ai/nomic-embed-text-v1.5` | 768 | ⚡ | Open-source, good balance |
+| `jinaai/jina-embeddings-v3` | 1024 | 🐢 | Multilingual, not in Ollama |
+
+### Reranker
+
+| Model | Notes |
+|-------|-------|
+| `BAAI/bge-reranker-large` | Good quality, English |
+| `BAAI/bge-reranker-v2-m3` | Multilingual |
+| `Qwen/Qwen3-Reranker-0.6B` | Lightweight, used by QMD |
+
+### Chat (GGUF)
+
+| Model | Notes |
+|-------|-------|
+| `bartowski/Llama-3.2-1B-Instruct-GGUF` | Small, fast |
+| `bartowski/Qwen2.5-3B-Instruct-GGUF` | Multilingual |
 
 ## Configuration
 
 ```yaml
 # infer-please.yaml (optional)
 port: 3141
-providers:
-  transformers:
-    dtype: q8                    # default quantization
-    cacheDir: ~/.cache/infer-please/onnx
-  llama-cpp:
-    cacheDir: ~/.cache/infer-please/gguf
-    gpu: auto                    # auto | none | metal | cuda | vulkan
+
+tei:
+  binary: text-embeddings-router  # or docker
+  idleTimeout: 300                # seconds before auto-stop
+  portRange: [8080, 8099]         # internal port pool
+
+llama:
+  binary: llama-server           # llama.cpp server binary
+  gpu: auto                       # auto | none | metal | cuda | vulkan
+
+models:
+  # Pre-load on startup (optional)
+  - model: BAAI/bge-small-en-v1.5
+    task: embedding
+  - model: BAAI/bge-reranker-large
+    task: rerank
 ```
-
-## Popular Models
-
-### Embedding
-
-| Model | Dimensions | Speed | Notes |
-|-------|-----------|-------|-------|
-| `Xenova/all-MiniLM-L6-v2` | 384 | ⚡ Fast | Good default |
-| `Xenova/bge-small-en-v1.5` | 384 | ⚡ Fast | Needs `query:` prefix |
-| `jinaai/jina-embeddings-v3` | 1024 | 🐢 Slower | Multilingual, high quality |
-| `nomic-ai/nomic-embed-text-v1.5` | 768 | ⚡ Fast | Good balance |
-
-### Reranker
-
-| Model | Notes |
-|-------|-------|
-| `Xenova/ms-marco-MiniLM-L-6-v2` | Fast, English |
-| `Xenova/bge-reranker-base` | Better quality |
 
 ## Architecture
 
 ```
-infer-please
+infer-please/
+├── packages/
+│   └── ai-sdk/                # @infer-please/ai-sdk
+│       └── index.ts           #   Vercel AI SDK provider
 ├── src/
-│   ├── index.ts              # Entry point
-│   ├── server.ts             # Hono app
-│   ├── cache.ts              # Pipeline cache & memory management
+│   ├── index.ts               # CLI entry point
+│   ├── server.ts              # Hono + OpenAI-compatible routes
+│   ├── tei-manager.ts         # TEI process lifecycle (Bun.spawn)
+│   ├── llama-manager.ts       # llama-server process lifecycle (Bun.spawn)
+│   ├── router.ts              # Model → backend routing
 │   ├── providers/
-│   │   ├── transformers.ts   # @huggingface/transformers (ONNX)
-│   │   └── llama-cpp.ts      # node-llama-cpp (GGUF)
+│   │   ├── tei.ts             # TEI proxy (embed + rerank)
+│   │   └── llama-server.ts    # llama.cpp server proxy (chat)
 │   └── routes/
-│       ├── embeddings.ts     # /v1/embeddings
-│       ├── rerank.ts         # /v1/rerank
-│       ├── chat.ts           # /v1/chat/completions
-│       └── models.ts         # /v1/models
-├── infer-please.yaml         # Optional config
+│       ├── embeddings.ts      # /v1/embeddings
+│       ├── rerank.ts          # /v1/rerank
+│       ├── chat.ts            # /v1/chat/completions
+│       └── models.ts          # /v1/models
 ├── package.json
 └── tsconfig.json
 ```
@@ -141,21 +243,25 @@ infer-please
 
 - **Runtime**: Bun
 - **Framework**: Hono
-- **ONNX Backend**: @huggingface/transformers
-- **GGUF Backend**: node-llama-cpp
+- **Embedding/Rerank engine**: HuggingFace TEI (Rust, via `Bun.spawn()`)
+- **Chat engine**: llama.cpp server (C++, via `Bun.spawn()`)
+- **Client SDK**: Vercel AI SDK provider
 - **Language**: TypeScript
 
 ## Roadmap
 
-- [ ] Transformers.js embedding & reranking
-- [ ] Dynamic model loading with cache
-- [ ] OpenAI-compatible API
-- [ ] node-llama-cpp integration for chat
-- [ ] CLI (`ip start`, `ip models`, `ip pull`)
-- [ ] Batch inference endpoint
-- [ ] WebGPU acceleration (Transformers.js v4)
-- [ ] Docker image
-- [ ] Metrics & health check endpoints
+- [ ] TEI process manager (spawn, health check, idle timeout)
+- [ ] OpenAI-compatible `/v1/embeddings` proxy
+- [ ] OpenAI-compatible `/v1/rerank` proxy
+- [ ] Model → TEI instance routing
+- [ ] llama.cpp server chat integration
+- [ ] `@infer-please/ai-sdk` provider package
+- [ ] CLI (`infer-please start`, `models`, `pull`)
+- [ ] Pre-load models on startup
+- [ ] Docker mode (TEI as containers instead of binary)
+- [ ] Streaming chat (SSE)
+- [ ] Metrics & health check
+- [ ] Vercel AI Gateway fallback (local-first, cloud-backup)
 
 ## Part of Please Tools
 
