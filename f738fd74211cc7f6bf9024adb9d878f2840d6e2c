@@ -1,0 +1,60 @@
+.please/docs/tracks/active/tei-integration-20260412/plan.md
+  269d1b187da4fa94 60
+packages/ai-sdk/src/embedding-model.test.ts
+  269d1b187da4fa94 1
+packages/tei/src/index.test.ts
+  269d1b187da4fa94 1-3,7-10
+packages/tei/src/types.test.ts
+  269d1b187da4fa94 11
+packages/tei/src/tei-manager.test.ts
+  269d1b187da4fa94 2,7,24,163,217,332-333
+packages/tei/src/types.ts
+  269d1b187da4fa94 4-9
+packages/server/package.json
+  269d1b187da4fa94 25
+packages/tei/src/binary.test.ts
+  269d1b187da4fa94 1-2,4-5,7-10,12,14-15,17-18,20-22,24,26-27,29-30,33-35,37-38,40-41,43,48-51
+packages/ai-sdk/src/embedding-model.ts
+  269d1b187da4fa94 2-3,29,32-33
+packages/tei/src/binary.ts
+  269d1b187da4fa94 1-3,5,14,18-19,22
+packages/tei/src/index.ts
+  269d1b187da4fa94 1-3,5-9,18-20
+packages/ai-sdk/package.json
+  269d1b187da4fa94 15-17,25
+packages/tei/eslint.config.mjs
+  269d1b187da4fa94 1-3
+packages/ai-sdk/tsconfig.json
+  269d1b187da4fa94 8
+.please/docs/references/mteb-leaderboard.csv
+  269d1b187da4fa94 1-402
+packages/ai-sdk/src/index.ts
+  269d1b187da4fa94 2,6,13
+packages/tei/src/tei-client.test.ts
+  269d1b187da4fa94 1
+packages/tei/src/tei-manager.ts
+  269d1b187da4fa94 1,83-84,101,137-138,142,152-153,168,190-193,223
+packages/tei/src/tei-client.ts
+  269d1b187da4fa94 9-10,19
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "f738fd74211cc7f6bf9024adb9d878f2840d6e2c",
+  "prompts": {
+    "269d1b187da4fa94": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "14a5a30a-d25b-4854-89ec-abb6ab6b007d",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 513,
+      "total_deletions": 108,
+      "accepted_lines": 803,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/7289be90da0c7bc0f8f98ff5070832d1eb843dee812bd50e0019fd990feb3cef"
+    }
+  }
+}
