@@ -1,0 +1,24 @@
+ARCHITECTURE.md
+  269d1b187da4fa94 31-33,35-37,39-43,47-52,60,62-64,69-73,81-83,85,89-101,103,108,112,114,120,128,144
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "5145e6b620b54e6cf4fb17794dfbefeedcb3ae46",
+  "prompts": {
+    "269d1b187da4fa94": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "14a5a30a-d25b-4854-89ec-abb6ab6b007d",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 56,
+      "total_deletions": 45,
+      "accepted_lines": 346,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/ce6d936dfaeece070ce1f992cb7de346c6195096b0030c7ef59c2c7d2edf98fe"
+    }
+  }
+}
