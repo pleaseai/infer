@@ -1,0 +1,78 @@
+.please/docs/knowledge/product-guidelines.md
+  59d4936f369d7f99 1-36
+packages/server/tsconfig.json
+  59d4936f369d7f99 1-19
+.please/docs/product-specs/index.md
+  59d4936f369d7f99 1-6
+packages/ai-sdk/package.json
+  59d4936f369d7f99 1-24
+.please/docs/knowledge/workflow.md
+  59d4936f369d7f99 1-139
+.please/docs/knowledge/product.md
+  59d4936f369d7f99 1-37
+.please/docs/decisions/index.md
+  59d4936f369d7f99 1-6
+.gitignore
+  59d4936f369d7f99 1-20
+.please/config.yml
+  59d4936f369d7f99 1-27
+package.json
+  59d4936f369d7f99 1-19
+ARCHITECTURE.md
+  59d4936f369d7f99 1-135
+packages/server/eslint.config.mjs
+  59d4936f369d7f99 1-3
+CLAUDE.md
+  59d4936f369d7f99 1-21
+packages/server/package.json
+  59d4936f369d7f99 1-28
+.please/docs/knowledge/tech-stack.md
+  59d4936f369d7f99 1-41
+packages/ai-sdk/eslint.config.mjs
+  59d4936f369d7f99 1-3
+.please/docs/tracks/tech-debt-tracker.md
+  59d4936f369d7f99 1-13
+.please/INDEX.md
+  59d4936f369d7f99 1-35
+packages/server/src/index.ts
+  59d4936f369d7f99 1
+packages/ai-sdk/tsconfig.json
+  59d4936f369d7f99 1-19
+turbo.json
+  59d4936f369d7f99 1-17
+packages/ai-sdk/src/index.ts
+  59d4936f369d7f99 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "b79dc9e94a3c1e42745bec2c23b5ff65474aee82",
+  "prompts": {
+    "59d4936f369d7f99": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6be0e3fa-b774-4746-8506-f541f989d949",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 689,
+      "total_deletions": 21,
+      "accepted_lines": 668,
+      "overriden_lines": 0
+    },
+    "ead506bae07090c9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "692bb9fb-6e49-4c94-b195-17f889f72566",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 272,
+      "total_deletions": 0,
+      "accepted_lines": 272,
+      "overriden_lines": 0
+    }
+  }
+}
