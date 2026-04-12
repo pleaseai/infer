@@ -1,12 +1,9 @@
 {
-  "name": "infer-please",
+  "name": "@infer-please/tei",
   "type": "module",
   "version": "0.0.0",
   "exports": {
     ".": "./src/index.ts"
-  },
-  "bin": {
-    "infer-please": "./dist/index.js"
   },
   "scripts": {
     "build": "bun build src/index.ts --outdir dist --target bun",
@@ -16,11 +13,7 @@
     "check-types": "tsc --noEmit",
     "test": "bun test"
   },
-  "dependencies": {
-    "hono": "^4"
-  },
   "devDependencies": {
-    "@infer-please/ai-sdk": "workspace:*",
     "@pleaseai/eslint-config": "latest",
     "bun-types": "latest",
     "eslint": "^9",
