@@ -1,0 +1,22 @@
+{
+  "name": "@infer-please/tei",
+  "type": "module",
+  "version": "0.0.0",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "scripts": {
+    "build": "bun build src/index.ts --outdir dist --target bun",
+    "dev": "bun run --watch src/index.ts",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix",
+    "check-types": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "devDependencies": {
+    "@pleaseai/eslint-config": "latest",
+    "bun-types": "latest",
+    "eslint": "^9",
+    "typescript": "^5"
+  }
+}
