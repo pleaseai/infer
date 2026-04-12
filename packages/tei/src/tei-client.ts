@@ -20,11 +20,12 @@ export class TeiClient {
     this.fetchFn = fetchFn
   }
 
-  async embed(request: EmbedRequest): Promise<EmbedResponse> {
+  async embed(request: EmbedRequest, signal?: AbortSignal): Promise<EmbedResponse> {
     const response = await this.fetchFn(`${this.baseUrl}/embed`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(request),
+      signal,
     })
 
     if (!response.ok) {
@@ -35,11 +36,12 @@ export class TeiClient {
     return response.json() as Promise<EmbedResponse>
   }
 
-  async rerank(request: RerankRequest): Promise<RerankResponse> {
+  async rerank(request: RerankRequest, signal?: AbortSignal): Promise<RerankResponse> {
     const response = await this.fetchFn(`${this.baseUrl}/rerank`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(request),
+      signal,
     })
 
     if (!response.ok) {

@@ -32,7 +32,7 @@ export class InferPleaseEmbeddingModel implements EmbeddingModelV1<string> {
     const client
       = this.clientOverride ?? new TeiClient({ baseUrl: `http://localhost:${proc.port}` })
 
-    const embeddings = await client.embed({ inputs: options.values })
+    const embeddings = await client.embed({ inputs: options.values }, options.abortSignal)
 
     return { embeddings, usage: { tokens: 0 } }
   }

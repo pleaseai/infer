@@ -72,7 +72,11 @@ export class TeiManager {
         return this.waitForReady(existing)
       }
 
-      // crashed or stopped — fall through to spawn fresh
+      // crashed or stopped — release resources before re-spawning
+      if (existing.state === 'crashed') {
+        this.portPool.release(existing.port)
+      }
+      this.processes.delete(modelId)
     }
 
     return this.spawnProcess(modelId)
@@ -129,23 +133,27 @@ export class TeiManager {
     this.processes.set(modelId, proc)
 
     // Listen for unexpected exit
-    subprocess.exited.then((code) => {
-      const current = this.processes.get(modelId)
-      if (current && current.state === 'ready') {
-        current.state = 'crashed'
-        this.clearIdleTimer(current)
-      }
-      else if (current && current.state === 'starting') {
-        // Health check will handle the timeout / rejection
-        current.state = 'crashed'
-        const err = new Error(`Process for ${modelId} exited with code ${code} before becoming ready`)
-        current.readyRejectors.forEach(reject => reject(err))
-        current.readyResolvers = []
-        current.readyRejectors = []
-      }
-    }).catch(() => {
-      // ignore — exit listener
-    })
+    subprocess.exited
+      .then((code) => {
+        const current = this.processes.get(modelId)
+        if (current && current.state === 'ready') {
+          current.state = 'crashed'
+          this.clearIdleTimer(current)
+        }
+        else if (current && current.state === 'starting') {
+          current.state = 'crashed'
+          const err = new Error(`Process for ${modelId} exited with code ${code} before becoming ready`)
+          this.portPool.release(current.port)
+          this.processes.delete(modelId)
+          current.readyRejectors.forEach(reject => reject(err))
+          current.readyResolvers = []
+          current.readyRejectors = []
+        }
+      })
+      .catch((exitErr: unknown) => {
+        // subprocess.exited itself rejected (Bun-level signal error)
+        console.error(`[TeiManager] subprocess.exited rejected for ${modelId}:`, exitErr)
+      })
 
     try {
       await this.waitForHealthy(proc)
@@ -158,6 +166,13 @@ export class TeiManager {
       }
       this.portPool.release(port)
       this.processes.delete(modelId)
+
+      // Reject any concurrent waiters
+      const rejection = err instanceof Error ? err : new Error(String(err))
+      proc.readyRejectors.forEach(reject => reject(rejection))
+      proc.readyResolvers = []
+      proc.readyRejectors = []
+
       throw err
     }
 
@@ -203,8 +218,8 @@ export class TeiManager {
   private resetIdleTimer(proc: InternalProcess): void {
     this.clearIdleTimer(proc)
     proc.idleTimer = setTimeout(() => {
-      this.stop(proc.modelId).catch(() => {
-        // ignore stop errors during idle timeout
+      this.stop(proc.modelId).catch((err: unknown) => {
+        console.error(`[TeiManager] Failed to stop idle process for ${proc.modelId}:`, err)
       })
     }, this.options.idleTimeoutMs)
   }
