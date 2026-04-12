@@ -11,9 +11,14 @@
     "packages/ai-sdk": {
       "name": "@infer-please/ai-sdk",
       "version": "0.0.0",
+      "dependencies": {
+        "@ai-sdk/provider": "^1",
+        "@infer-please/tei": "workspace:*",
+      },
       "devDependencies": {
         "@pleaseai/eslint-config": "latest",
         "ai": "^4",
+        "bun-types": "latest",
         "eslint": "^9",
         "typescript": "^5",
       },
