@@ -49,14 +49,14 @@ User Code
 
 ## Tasks
 
-- [ ] T001 [P] packages/tei 패키지 스캐폴딩 (file: packages/tei/package.json)
-- [ ] T002 [P] 타입 정의 (file: packages/tei/src/types.ts)
-- [ ] T003 [P] TEI 바이너리 탐색 유틸리티 (file: packages/tei/src/binary.ts)
-- [ ] T004 [P] 포트 풀 관리 (file: packages/tei/src/port-pool.ts)
-- [ ] T005 TEI 프로세스 매니저 — spawn, health check, idle timeout, crash recovery (file: packages/tei/src/tei-manager.ts) (depends on T002, T003, T004)
-- [ ] T006 TEI HTTP 클라이언트 — embed, rerank 호출 (file: packages/tei/src/tei-client.ts) (depends on T002)
-- [ ] T007 Public API — createTeiManager, embed, rerank export (file: packages/tei/src/index.ts) (depends on T005, T006)
-- [ ] T008 AI SDK EmbeddingModel 구현 (file: packages/ai-sdk/src/embedding-model.ts) (depends on T007)
+- [x] (2026-04-12 KST) T001 [P] packages/tei 패키지 스캐폴딩 (file: packages/tei/package.json)
+- [x] (2026-04-12 KST) T002 [P] 타입 정의 (file: packages/tei/src/types.ts)
+- [x] (2026-04-12 16:00 KST) T003 [P] TEI 바이너리 탐색 유틸리티 (file: packages/tei/src/binary.ts)
+- [x] (2026-04-12 KST) T004 [P] 포트 풀 관리 (file: packages/tei/src/port-pool.ts)
+- [x] (2026-04-12 KST) T005 TEI 프로세스 매니저 — spawn, health check, idle timeout, crash recovery (file: packages/tei/src/tei-manager.ts) (depends on T002, T003, T004)
+- [x] (2026-04-12 17:00 KST) T006 TEI HTTP 클라이언트 — embed, rerank 호출 (file: packages/tei/src/tei-client.ts) (depends on T002)
+- [x] (2026-04-12 KST) T007 Public API — createTeiManager, embed, rerank export (file: packages/tei/src/index.ts) (depends on T005, T006)
+- [x] (2026-04-12 KST) T008 AI SDK EmbeddingModel 구현 (file: packages/ai-sdk/src/embedding-model.ts) (depends on T007)
 - [ ] T009 AI SDK provider factory — createInferPlease() (file: packages/ai-sdk/src/index.ts) (depends on T008)
 
 ## Key Files
