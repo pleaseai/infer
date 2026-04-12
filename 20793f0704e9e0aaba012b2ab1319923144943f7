@@ -1,0 +1,24 @@
+.please/docs/knowledge/tech-stack.md
+  269d1b187da4fa94 16,33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "20793f0704e9e0aaba012b2ab1319923144943f7",
+  "prompts": {
+    "269d1b187da4fa94": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "14a5a30a-d25b-4854-89ec-abb6ab6b007d",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 2,
+      "total_deletions": 0,
+      "accepted_lines": 292,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/3b21ac4a9cdb926ab1576b8cbca2b00decf4a20a81b457644efdad86e6692d70"
+    }
+  }
+}
