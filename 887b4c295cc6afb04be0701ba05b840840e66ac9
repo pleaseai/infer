@@ -1,0 +1,26 @@
+packages/tei/src/tei-client.ts
+  269d1b187da4fa94 1-50
+packages/tei/src/tei-client.test.ts
+  269d1b187da4fa94 1-118
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "887b4c295cc6afb04be0701ba05b840840e66ac9",
+  "prompts": {
+    "269d1b187da4fa94": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "14a5a30a-d25b-4854-89ec-abb6ab6b007d",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 510,
+      "total_deletions": 3,
+      "accepted_lines": 800,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/33e58a438d618525de565f1b5ea457fcd677037cf13ae92e873c6c72fe8997e7"
+    }
+  }
+}
