@@ -139,6 +139,7 @@ T013 → T014 (integration), T015 (docs)
 - 2026-04-14: T013 CLI entry point — 11 tests
 - 2026-04-14: T014 Integration tests — 9 tests (OpenAI SDK + AI SDK + curl)
 - 2026-04-14: T015 ARCHITECTURE.md + README.md
+- 2026-04-14: Review fixes — extract backends.ts, _shared.ts, TeiClient memoization, exhaustive backend switch, shutdown error surfacing, drop unused `dimensions`, comment token-estimate semantics
 - **Final**: 101 tests pass; coverage 100% line / ≥78% branch on server files (>80% target met)
 
 ## Decision Log

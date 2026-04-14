@@ -9,7 +9,6 @@ export const openAIEmbeddingsRequestSchema = z.object({
     z.array(z.string()).min(1),
   ]),
   encoding_format: z.enum(['float', 'base64']).default('float'),
-  dimensions: z.number().int().positive().optional(),
   user: z.string().optional(),
 })
 
@@ -42,6 +41,9 @@ export function openAIToTeiEmbed(req: OpenAIEmbeddingsRequest): EmbedRequest {
   return { inputs: req.input }
 }
 
+// TEI does not report real token usage; the OpenAI embedding response schema
+// requires prompt_tokens, so we return a rough chars/4 proxy. Treat as
+// advisory, not authoritative.
 export function estimateTokens(input: string | string[]): number {
   const arr = Array.isArray(input) ? input : [input]
   return arr.reduce((sum, s) => sum + Math.max(1, Math.ceil(s.length / 4)), 0)

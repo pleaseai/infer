@@ -39,7 +39,13 @@ async function main(argv: string[]): Promise<void> {
   const shutdown = () => {
     process.stdout.write('\nshutting down...\n')
     server.stop()
-    teiManager.stopAll().finally(() => process.exit(0))
+    teiManager.stopAll().then(
+      () => process.exit(0),
+      (err: unknown) => {
+        process.stderr.write(`[shutdown] stopAll failed: ${err instanceof Error ? err.message : String(err)}\n`)
+        process.exit(1)
+      },
+    )
   }
   process.on('SIGINT', shutdown)
   process.on('SIGTERM', shutdown)

@@ -1,7 +1,7 @@
 import type { TeiManager } from '@infer-please/tei'
 import type { Hono } from 'hono'
+import type { Backends, TeiBackend } from './backends'
 import type { Config } from './config'
-import type { Backends, TeiBackend } from './routes/embeddings'
 import { TeiClient } from '@infer-please/tei'
 import { createRegistry } from './registry'
 import { mountChatRoutes } from './routes/chat'
@@ -11,10 +11,22 @@ import { mountRerankRoutes } from './routes/rerank'
 import { createApp } from './server'
 
 export function createTeiBackend(manager: TeiManager): TeiBackend {
+  // Reuse one TeiClient per baseUrl so request-scoped allocations don't
+  // defeat fetch keep-alive on the hot path.
+  const clients = new Map<string, TeiClient>()
+  const clientFor = (baseUrl: string): TeiClient => {
+    let c = clients.get(baseUrl)
+    if (!c) {
+      c = new TeiClient({ baseUrl })
+      clients.set(baseUrl, c)
+    }
+    return c
+  }
+
   return {
     ensureRunning: id => manager.ensureRunning(id),
-    embed: (baseUrl, request) => new TeiClient({ baseUrl }).embed(request),
-    rerank: (baseUrl, request) => new TeiClient({ baseUrl }).rerank(request),
+    embed: (baseUrl, request) => clientFor(baseUrl).embed(request),
+    rerank: (baseUrl, request) => clientFor(baseUrl).rerank(request),
   }
 }
 
