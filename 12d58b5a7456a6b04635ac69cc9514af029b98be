@@ -1,0 +1,32 @@
+packages/server/src/routes/rerank.ts
+  012fb6e342e03cfe 1-45
+.please/docs/tracks/active/ai-gateway-endpoints-20260414/plan.md
+  012fb6e342e03cfe 67
+packages/server/src/routes/embeddings.ts
+  012fb6e342e03cfe 1-7,20
+packages/server/src/routes/rerank.test.ts
+  012fb6e342e03cfe 1-112
+packages/server/src/routes/embeddings.test.ts
+  012fb6e342e03cfe 34-36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "12d58b5a7456a6b04635ac69cc9514af029b98be",
+  "prompts": {
+    "012fb6e342e03cfe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4cbec605-080f-43bd-8519-b778cb420d2e",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 169,
+      "total_deletions": 2,
+      "accepted_lines": 169,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/13e6639969992f20d93b8e40bedf2d78ead45b8b1c4725658735fa54bd10b4db"
+    }
+  }
+}
