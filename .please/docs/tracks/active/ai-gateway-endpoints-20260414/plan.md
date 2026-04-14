@@ -67,7 +67,7 @@ Hono App (server.ts)
 - [x] T011 POST /v1/rerank (file: packages/server/src/routes/rerank.ts) (depends on T005, T006, T010)
 - [x] T012 POST /v1/chat/completions — 501 stub (file: packages/server/src/routes/chat.ts) (depends on T005)
 - [x] T013 CLI `infer-please start [--port] [--config]` 진입점 (file: packages/server/src/index.ts) (depends on T005, T007, T009, T011, T012)
-- [ ] T014 통합 테스트 — OpenAI Node SDK + @ai-sdk/openai-compatible + curl (file: packages/server/src/integration.test.ts) (depends on T013)
+- [x] T014 통합 테스트 — OpenAI Node SDK + @ai-sdk/openai-compatible + curl (file: packages/server/src/integration.test.ts) (depends on T013)
 - [ ] T015 ARCHITECTURE.md 업데이트 (server 서브시스템 레이어 문서화) + packages/server/README.md 작성 (file: ARCHITECTURE.md, packages/server/README.md) (depends on T013)
 
 ## Dependencies

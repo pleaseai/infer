@@ -1,4 +1,5 @@
 import type { EmbedRequest, EmbedResponse } from '@infer-please/tei'
+import { Buffer } from 'node:buffer'
 import { z } from 'zod'
 
 export const openAIEmbeddingsRequestSchema = z.object({
@@ -7,7 +8,7 @@ export const openAIEmbeddingsRequestSchema = z.object({
     z.string().min(1),
     z.array(z.string()).min(1),
   ]),
-  encoding_format: z.literal('float').optional(),
+  encoding_format: z.enum(['float', 'base64']).default('float'),
   dimensions: z.number().int().positive().optional(),
   user: z.string().optional(),
 })
@@ -17,7 +18,14 @@ export type OpenAIEmbeddingsRequest = z.infer<typeof openAIEmbeddingsRequestSche
 export interface OpenAIEmbeddingItem {
   object: 'embedding'
   index: number
-  embedding: number[]
+  embedding: number[] | string
+}
+
+function floatsToBase64(values: number[]): string {
+  const buf = new ArrayBuffer(values.length * 4)
+  const view = new Float32Array(buf)
+  for (let i = 0; i < values.length; i++) view[i] = values[i] ?? 0
+  return Buffer.from(buf).toString('base64')
 }
 
 export interface OpenAIEmbeddingsResponse {
@@ -43,10 +51,11 @@ export function teiToOpenAIEmbeddings(
   vectors: EmbedResponse,
   req: OpenAIEmbeddingsRequest,
 ): OpenAIEmbeddingsResponse {
-  const data: OpenAIEmbeddingItem[] = vectors.map((embedding, index) => ({
+  const useBase64 = req.encoding_format === 'base64'
+  const data: OpenAIEmbeddingItem[] = vectors.map((vec, index) => ({
     object: 'embedding',
     index,
-    embedding,
+    embedding: useBase64 ? floatsToBase64(vec) : vec,
   }))
   const tokens = estimateTokens(req.input)
   return {
