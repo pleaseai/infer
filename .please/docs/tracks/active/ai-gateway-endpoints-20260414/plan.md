@@ -54,7 +54,7 @@ Hono App (server.ts)
 
 ## Tasks
 
-- [ ] T001 [P] Install deps (`yaml`, `zod`, `@hono/zod-validator`; devDep `@infer-please/tei` workspace, `openai`, `@ai-sdk/openai-compatible`, `ai`) (file: packages/server/package.json)
+- [x] T001 [P] Install deps (`yaml`, `zod`, `@hono/zod-validator`; devDep `@infer-please/tei` workspace, `openai`, `@ai-sdk/openai-compatible`, `ai`) (file: packages/server/package.json)
 - [ ] T002 Config schema + YAML loader (file: packages/server/src/config.ts) (depends on T001)
 - [ ] T003 [P] OpenAI-format error response helper (file: packages/server/src/errors.ts)
 - [ ] T004 Auth middleware — Bearer 검증 (file: packages/server/src/middleware/auth.ts) (depends on T003)
