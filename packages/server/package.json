@@ -25,8 +25,8 @@
   },
   "devDependencies": {
     "@ai-sdk/openai-compatible": "^0.2",
-    "@pleaseai/infer-ai-sdk": "workspace:*",
     "@pleaseai/eslint-config": "latest",
+    "@pleaseai/infer-ai-sdk": "workspace:*",
     "ai": "^4",
     "bun-types": "latest",
     "eslint": "^9",
