@@ -1,0 +1,32 @@
+.please/docs/tracks/active/e2e-tests-20260415/plan.md
+  30a7e1d8fe3d48b8 12,20,24,28,30-32,39-40,42,49-60,65,74-75,102-103,105,109,113,115
+packages/server/test/e2e/helpers.ts
+  30a7e1d8fe3d48b8 1-101
+packages/server/test/e2e/smoke.e2e.test.ts
+  30a7e1d8fe3d48b8 1-34
+.please/docs/tracks/active/e2e-tests-20260415/metadata.json
+  30a7e1d8fe3d48b8 8
+packages/server/test/e2e/docker-spawn.ts
+  30a7e1d8fe3d48b8 1-94
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "7ee8e66ab281a56270aba57bb3b273161541b1d8",
+  "prompts": {
+    "30a7e1d8fe3d48b8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3e2c3c03-f200-41ad-a58a-dc987b8251bb",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 263,
+      "total_deletions": 24,
+      "accepted_lines": 261,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/4dfa7852007b4d6c0de48a7f1b0f4492ac25f8c02b080d0ea7e2e4971dadecc3"
+    }
+  }
+}
