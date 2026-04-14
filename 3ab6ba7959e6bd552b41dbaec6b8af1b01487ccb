@@ -1,0 +1,32 @@
+turbo.json
+  30a7e1d8fe3d48b8 15-19
+packages/server/package.json
+  30a7e1d8fe3d48b8 17-18
+packages/ai-sdk/package.json
+  30a7e1d8fe3d48b8 13-14
+package.json
+  30a7e1d8fe3d48b8 14
+.please/docs/tracks/active/e2e-tests-20260415/plan.md
+  30a7e1d8fe3d48b8 66-67
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "3ab6ba7959e6bd552b41dbaec6b8af1b01487ccb",
+  "prompts": {
+    "30a7e1d8fe3d48b8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3e2c3c03-f200-41ad-a58a-dc987b8251bb",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 14,
+      "total_deletions": 7,
+      "accepted_lines": 12,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/f56413ef07a7efbbaf7f2438db73fca79a690b4f56c4f415d68f9cef656c72ee"
+    }
+  }
+}
