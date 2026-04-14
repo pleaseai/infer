@@ -1,6 +1,6 @@
 #!/usr/bin/env bun
 import process from 'node:process'
-import { createTeiManager } from '@infer-please/tei'
+import { createTeiManager } from '@pleaseai/infer-tei'
 import { buildApp, createTeiBackend } from './app'
 import { HELP_TEXT, parseCliArgs, resolveConfig } from './cli'
 
@@ -31,7 +31,7 @@ async function main(argv: string[]): Promise<void> {
   })
 
   process.stdout.write(
-    `infer-please listening on http://${server.hostname}:${server.port}\n`
+    `infer listening on http://${server.hostname}:${server.port}\n`
     + `  models: ${config.models.length} registered\n`
     + `  auth:   ${config.auth?.token ? 'on' : 'off'}\n`,
   )

@@ -17,7 +17,7 @@ Vercel AI Gateway 수준의 OpenAI 호환 HTTP API를 구현하여, infer-please
 
 ## Context
 
-현재 `packages/server`는 스켈레톤(`export {}`) 상태이며 hono v4 의존성만 설치되어 있다. `@infer-please/tei`의 `TeiManager.ensureRunning(modelId)`가 동적 프로세스 스폰/헬스 체크/아이들 타이머를 이미 처리하고, `TeiClient`가 baseUrl을 받아 embed/rerank를 호출한다. 이번 트랙은 (1) 설정 로더, (2) Hono 서버 부트스트랩, (3) OpenAI/Cohere 포맷 투 방향 번역, (4) 라우트/미들웨어, (5) CLI start 명령을 추가한다. 주의: TEI 자체 rerank 응답은 `score` 필드를 쓰므로 Cohere의 `relevance_score`로 재매핑해야 한다.
+현재 `packages/server`는 스켈레톤(`export {}`) 상태이며 hono v4 의존성만 설치되어 있다. `@pleaseai/infer-tei`의 `TeiManager.ensureRunning(modelId)`가 동적 프로세스 스폰/헬스 체크/아이들 타이머를 이미 처리하고, `TeiClient`가 baseUrl을 받아 embed/rerank를 호출한다. 이번 트랙은 (1) 설정 로더, (2) Hono 서버 부트스트랩, (3) OpenAI/Cohere 포맷 투 방향 번역, (4) 라우트/미들웨어, (5) CLI start 명령을 추가한다. 주의: TEI 자체 rerank 응답은 `score` 필드를 쓰므로 Cohere의 `relevance_score`로 재매핑해야 한다.
 
 ## Architecture Decision
 
@@ -32,7 +32,7 @@ Vercel AI Gateway 수준의 OpenAI 호환 HTTP API를 구현하여, infer-please
 - `translators/` — OpenAI/Cohere ↔ TEI 요청·응답 변환
 - `routes/` — `models`, `embeddings`, `rerank`, `chat` (한 파일당 한 엔드포인트 그룹)
 - `server.ts` — Hono app factory (라우트 조립, 미들웨어 와이어링, 의존성 주입)
-- `index.ts` — CLI 진입점 (`infer-please start`)
+- `index.ts` — CLI 진입점 (`infer start`)
 
 **의존성 주입**: `createApp({ teiManager, registry, authToken? })` 패턴 — 테스트에서 TeiManager를 mock하기 쉬울 것.
 
@@ -54,7 +54,7 @@ Hono App (server.ts)
 
 ## Tasks
 
-- [x] T001 [P] Install deps (`yaml`, `zod`, `@hono/zod-validator`; devDep `@infer-please/tei` workspace, `openai`, `@ai-sdk/openai-compatible`, `ai`) (file: packages/server/package.json)
+- [x] T001 [P] Install deps (`yaml`, `zod`, `@hono/zod-validator`; devDep `@pleaseai/infer-tei` workspace, `openai`, `@ai-sdk/openai-compatible`, `ai`) (file: packages/server/package.json)
 - [x] T002 Config schema + YAML loader (file: packages/server/src/config.ts) (depends on T001)
 - [x] T003 [P] OpenAI-format error response helper (file: packages/server/src/errors.ts)
 - [x] T004 Auth middleware — Bearer 검증 (file: packages/server/src/middleware/auth.ts) (depends on T003)
@@ -66,7 +66,7 @@ Hono App (server.ts)
 - [x] T010 [P] Rerank translators (Cohere ↔ TEI; score → relevance_score 재매핑) (file: packages/server/src/translators/rerank.ts) (depends on T001)
 - [x] T011 POST /v1/rerank (file: packages/server/src/routes/rerank.ts) (depends on T005, T006, T010)
 - [x] T012 POST /v1/chat/completions — 501 stub (file: packages/server/src/routes/chat.ts) (depends on T005)
-- [x] T013 CLI `infer-please start [--port] [--config]` 진입점 (file: packages/server/src/index.ts) (depends on T005, T007, T009, T011, T012)
+- [x] T013 CLI `infer start [--port] [--config]` 진입점 (file: packages/server/src/index.ts) (depends on T005, T007, T009, T011, T012)
 - [x] T014 통합 테스트 — OpenAI Node SDK + @ai-sdk/openai-compatible + curl (file: packages/server/src/integration.test.ts) (depends on T013)
 - [x] T015 ARCHITECTURE.md 업데이트 (server 서브시스템 레이어 문서화) + packages/server/README.md 작성 (file: ARCHITECTURE.md, packages/server/README.md) (depends on T013)
 
@@ -116,7 +116,7 @@ T013 → T014 (integration), T015 (docs)
 - `bun test` 통과, 커버리지 >80%
 - `turbo run lint check-types test` 전체 통과
 - 수동 검증:
-  1. `bun infer-please start --port 3141`
+  1. `bun infer start --port 3141`
   2. `curl http://localhost:3141/v1/models` → 등록 모델 목록
   3. OpenAI SDK로 `embeddings.create` 성공
   4. Cohere shape로 `/v1/rerank` 호출 → `relevance_score` 내림차순 응답
@@ -153,7 +153,7 @@ T013 → T014 (integration), T015 (docs)
 
 ### What Was Shipped
 
-Single-port OpenAI-compatible HTTP gateway in `packages/server` — `/v1/models`, `/v1/embeddings` (with base64 support), `/v1/rerank` (Cohere shape), `/v1/chat/completions` (501 stub), optional Bearer auth, CLI (`infer-please start`). 101 tests / 0 fail / 100% line coverage on server code.
+Single-port OpenAI-compatible HTTP gateway in `packages/server` — `/v1/models`, `/v1/embeddings` (with base64 support), `/v1/rerank` (Cohere shape), `/v1/chat/completions` (501 stub), optional Bearer auth, CLI (`infer start`). 101 tests / 0 fail / 100% line coverage on server code.
 
 ### What Went Well
 

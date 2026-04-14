@@ -4,7 +4,7 @@ import type {
   RerankRequest,
   RerankResponse,
   TeiProcess,
-} from '@infer-please/tei'
+} from '@pleaseai/infer-tei'
 
 export interface TeiBackend {
   ensureRunning: (modelId: string) => Promise<TeiProcess>

@@ -1,4 +1,4 @@
-import type { EmbedRequest, EmbedResponse, TeiProcess } from '@infer-please/tei'
+import type { EmbedRequest, EmbedResponse, TeiProcess } from '@pleaseai/infer-tei'
 import type { ModelEntry } from '../config'
 import type { Backends } from './embeddings'
 import { describe, expect, it } from 'bun:test'

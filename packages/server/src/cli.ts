@@ -61,14 +61,14 @@ export function resolveConfig(args: CliArgs): Config {
   return base
 }
 
-export const HELP_TEXT = `infer-please — local OpenAI-compatible inference gateway
+export const HELP_TEXT = `infer — local OpenAI-compatible inference gateway
 
 Usage:
-  infer-please start [--port <port>] [--config <path>]
-  infer-please --help
+  infer start [--port <port>] [--config <path>]
+  infer --help
 
 Options:
   -p, --port <port>    Port to bind (default 3141, overrides config)
-  -c, --config <path>  Path to infer-please.yaml
+  -c, --config <path>  Path to infer.yaml
   -h, --help           Show this help
 `

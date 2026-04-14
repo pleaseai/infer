@@ -31,11 +31,11 @@ The system MUST expose `GET /v1/models`, `GET /v1/models/{id}`, `POST /v1/embedd
 
 ### Requirement: Models endpoint returns OpenAI-schema model records from a static registry
 
-The system MUST expose `/v1/models` and `/v1/models/{id}` returning `{id, object:'model', created, owned_by}` shapes sourced from the `models` array in `infer-please.yaml`.
+The system MUST expose `/v1/models` and `/v1/models/{id}` returning `{id, object:'model', created, owned_by}` shapes sourced from the `models` array in `infer.yaml`.
 
 #### Scenario: list and retrieve registered models
 
-- GIVEN `infer-please.yaml` registers at least one model
+- GIVEN `infer.yaml` registers at least one model
 - WHEN a client calls `GET /v1/models` or `GET /v1/models/{id}`
 - THEN the server returns the registered models in OpenAI Model schema
 
@@ -81,11 +81,11 @@ The system MUST return every error as `{error:{message, type, param?, code}}` wi
 
 ### Requirement: Configuration file schema
 
-The system MUST parse `infer-please.yaml` with at minimum `server.port` (default 3141), `server.host` (default '127.0.0.1'), optional `auth.token`, and a `models` array of `{id, type, backend, repo_id, ...backend_opts}`.
+The system MUST parse `infer.yaml` with at minimum `server.port` (default 3141), `server.host` (default '127.0.0.1'), optional `auth.token`, and a `models` array of `{id, type, backend, repo_id, ...backend_opts}`.
 
 #### Scenario: config parsing
 
-- GIVEN a valid `infer-please.yaml` on disk
+- GIVEN a valid `infer.yaml` on disk
 - WHEN the server starts with `--config` pointing at that file
 - THEN the server honors the parsed port, host, auth, and model registry
 
@@ -121,19 +121,19 @@ The system MUST return HTTP 404 with `{type:'invalid_request_error', code:'model
 
 ### Requirement: CLI start command
 
-The system MUST expose an `infer-please start [--port <port>] [--config <path>]` command that launches the HTTP server using the resolved configuration.
+The system MUST expose an `infer start [--port <port>] [--config <path>]` command that launches the HTTP server using the resolved configuration.
 
 #### Scenario: CLI startup
 
 - GIVEN the `infer-please` binary is installed
-- WHEN the operator runs `infer-please start --port 3141`
+- WHEN the operator runs `infer start --port 3141`
 - THEN the server begins listening on port 3141 with endpoints ready to serve
 
 ## Non-functional Requirements
 
 ### Requirement: Route handlers depend only on lower layers
 
-The system SHOULD keep route handlers dependent on lower layers (`@infer-please/tei`, registry, translators) only — they SHOULD NOT call `Bun.spawn()` directly.
+The system SHOULD keep route handlers dependent on lower layers (`@pleaseai/infer-tei`, registry, translators) only — they SHOULD NOT call `Bun.spawn()` directly.
 
 ### Requirement: Test coverage exceeds 80%
 

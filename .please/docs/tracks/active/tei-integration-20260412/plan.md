@@ -23,17 +23,17 @@ Non-goals for this track: HTTP server (Hono), llama.cpp, Transformers.js, config
 
 ## Architecture Decision
 
-Two packages with clear separation: `@infer-please/tei` owns all process lifecycle and TEI HTTP communication, `@infer-please/ai-sdk` is a stateless adapter that delegates to tei. The tei package is split into focused modules — TeiManager (process state machine), TeiClient (HTTP calls to TEI), PortPool (port allocation), and binary discovery. This keeps each module independently testable with clear boundaries. The Manager uses a Map<modelId, TeiProcess> where each TeiProcess tracks state (starting/ready/stopping), the spawned Bun subprocess, allocated port, and idle timer.
+Two packages with clear separation: `@pleaseai/infer-tei` owns all process lifecycle and TEI HTTP communication, `@pleaseai/infer-ai-sdk` is a stateless adapter that delegates to tei. The tei package is split into focused modules — TeiManager (process state machine), TeiClient (HTTP calls to TEI), PortPool (port allocation), and binary discovery. This keeps each module independently testable with clear boundaries. The Manager uses a Map<modelId, TeiProcess> where each TeiProcess tracks state (starting/ready/stopping), the spawned Bun subprocess, allocated port, and idle timer.
 
 ## Architecture Diagram
 
 ```
 User Code
   │
-  ├─ embed() ──► @infer-please/ai-sdk
+  ├─ embed() ──► @pleaseai/infer-ai-sdk
   │                    │
   │                    ▼
-  └─ direct ──► @infer-please/tei
+  └─ direct ──► @pleaseai/infer-tei
                      │
           ┌──────────┼──────────┐
           ▼          ▼          ▼
@@ -75,7 +75,7 @@ User Code
 ### Modify
 
 - `packages/ai-sdk/src/index.ts` — createInferPlease() provider factory 구현
-- `packages/ai-sdk/package.json` — @infer-please/tei workspace 의존성 추가
+- `packages/ai-sdk/package.json` — @pleaseai/infer-tei workspace 의존성 추가
 
 ### Reuse
 
@@ -108,8 +108,8 @@ User Code
 
 ### Acceptance Criteria Check
 
-- [ ] AC-1: @infer-please/tei로 TEI 프로세스를 시작하고 embedding 결과를 받을 수 있다
-- [ ] AC-2: @infer-please/ai-sdk의 embed() 함수로 텍스트 임베딩을 수행할 수 있다
+- [ ] AC-1: @pleaseai/infer-tei로 TEI 프로세스를 시작하고 embedding 결과를 받을 수 있다
+- [ ] AC-2: @pleaseai/infer-ai-sdk의 embed() 함수로 텍스트 임베딩을 수행할 수 있다
 - [ ] AC-3: idle timeout 후 TEI 프로세스가 자동 종료되고, 다음 요청에서 자동 재시작된다
 - [ ] AC-4: text-embeddings-router가 설치되지 않은 환경에서 명확한 에러 메시지가 표시된다
 - [ ] AC-5: 단위 테스트가 80% 이상 커버리지를 달성한다

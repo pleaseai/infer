@@ -1,12 +1,12 @@
 {
-  "name": "infer-please",
+  "name": "@pleaseai/infer",
   "type": "module",
   "version": "0.0.0",
   "exports": {
     ".": "./src/index.ts"
   },
   "bin": {
-    "infer-please": "./dist/index.js"
+    "infer": "./dist/index.js"
   },
   "scripts": {
     "build": "bun build src/index.ts --outdir dist --target bun",
@@ -18,14 +18,14 @@
   },
   "dependencies": {
     "@hono/zod-validator": "^0.4",
-    "@infer-please/tei": "workspace:*",
+    "@pleaseai/infer-tei": "workspace:*",
     "hono": "^4",
     "yaml": "^2",
     "zod": "^3"
   },
   "devDependencies": {
     "@ai-sdk/openai-compatible": "^0.2",
-    "@infer-please/ai-sdk": "workspace:*",
+    "@pleaseai/infer-ai-sdk": "workspace:*",
     "@pleaseai/eslint-config": "latest",
     "ai": "^4",
     "bun-types": "latest",

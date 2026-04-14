@@ -1,23 +1,23 @@
-# infer-please
+# @pleaseai/infer
 
 OpenAI-compatible HTTP gateway for local embedding, reranking, and (future) chat inference. A single port serves multiple models, each backed by a TEI or llama.cpp process spawned on demand.
 
 ## Install
 
 ```bash
-bun add -g infer-please
+bun add -g @pleaseai/infer
 ```
 
 ## Start
 
 ```bash
-infer-please start --config ./infer-please.yaml
+infer start --config ./infer.yaml
 ```
 
 | Flag                 | Description                                           |
 | -------------------- | ----------------------------------------------------- |
 | `-p, --port <port>`  | Bind port (default `3141`, overrides config)          |
-| `-c, --config <path>`| Path to `infer-please.yaml`                           |
+| `-c, --config <path>`| Path to `infer.yaml`                                  |
 | `-h, --help`         | Show help                                             |
 
 ## Endpoints
@@ -34,7 +34,7 @@ All errors use the OpenAI envelope `{error: {message, type, code, param}}` with 
 
 ## Configuration
 
-`infer-please.yaml`:
+`infer.yaml`:
 
 ```yaml
 server:
@@ -115,7 +115,7 @@ curl -X POST http://localhost:3141/v1/rerank \
 
 ## Architecture
 
-See [`ARCHITECTURE.md`](../../ARCHITECTURE.md) for the layered design (routes → registry → backend dispatch → `@infer-please/tei` process management).
+See [`ARCHITECTURE.md`](../../ARCHITECTURE.md) for the layered design (routes → registry → backend dispatch → `@pleaseai/infer-tei` process management).
 
 ## Development
 

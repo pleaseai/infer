@@ -1,4 +1,4 @@
-import type { EmbedRequest, EmbedResponse } from '@infer-please/tei'
+import type { EmbedRequest, EmbedResponse } from '@pleaseai/infer-tei'
 import { Buffer } from 'node:buffer'
 import { z } from 'zod'
 
