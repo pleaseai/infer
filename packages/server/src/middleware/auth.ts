@@ -1,7 +1,7 @@
 import type { MiddlewareHandler } from 'hono'
 import { unauthorized } from '../errors'
 
-const BEARER_RE = /^bearer\s+(.+)$/i
+const BEARER_RE = /^bearer +(\S.*)$/i
 
 export function bearerAuth(expectedToken: string | undefined): MiddlewareHandler {
   return async (c, next) => {

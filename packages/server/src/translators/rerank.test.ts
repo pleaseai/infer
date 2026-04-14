@@ -30,13 +30,18 @@ describe('cohereRerankRequestSchema', () => {
 
   it('rejects empty documents array', () => {
     expect(() => cohereRerankRequestSchema.parse({
-      model: 'm', query: 'q', documents: [],
+      model: 'm',
+      query: 'q',
+      documents: [],
     })).toThrow()
   })
 
   it('rejects non-positive top_n', () => {
     expect(() => cohereRerankRequestSchema.parse({
-      model: 'm', query: 'q', documents: ['a'], top_n: 0,
+      model: 'm',
+      query: 'q',
+      documents: ['a'],
+      top_n: 0,
     })).toThrow()
   })
 })
@@ -44,14 +49,20 @@ describe('cohereRerankRequestSchema', () => {
 describe('cohereToTeiRerank', () => {
   it('maps query and documents into TEI shape', () => {
     const out = cohereToTeiRerank({
-      model: 'm', query: 'q', documents: ['a', 'b'], return_documents: false,
+      model: 'm',
+      query: 'q',
+      documents: ['a', 'b'],
+      return_documents: false,
     })
     expect(out).toEqual({ query: 'q', texts: ['a', 'b'], return_text: false })
   })
 
   it('forwards return_documents=true as return_text=true', () => {
     const out = cohereToTeiRerank({
-      model: 'm', query: 'q', documents: ['a'], return_documents: true,
+      model: 'm',
+      query: 'q',
+      documents: ['a'],
+      return_documents: true,
     })
     expect(out.return_text).toBe(true)
   })

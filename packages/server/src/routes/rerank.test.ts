@@ -22,7 +22,11 @@ function mockBackends(scores: RerankResponse): MockState {
       tei: {
         ensureRunning(modelId): Promise<TeiProcess> {
           return Promise.resolve({
-            modelId, port: 9000, state: 'ready', subprocess: null, idleTimer: null,
+            modelId,
+            port: 9000,
+            state: 'ready',
+            subprocess: null,
+            idleTimer: null,
           })
         },
         embed() {

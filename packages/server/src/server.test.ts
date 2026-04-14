@@ -18,7 +18,7 @@ describe('createApp', () => {
     })
     const res = await app.request('/boom')
     expect(res.status).toBe(404)
-    const body = await res.json() as { error: { code: string; message: string } }
+    const body = await res.json() as { error: { code: string, message: string } }
     expect(body.error.code).toBe('model_not_found')
     expect(body.error.message).toContain('foo')
   })
