@@ -106,7 +106,12 @@ T002, T003 ────────────────────┬─→
 
 ## Progress
 
-- 2026-04-15: T001 completed — Docker adapter + helpers + smoke test (type check passes; runtime verification deferred to final suite run)
+- 2026-04-15: T001 — Docker adapter (`dockerSpawnFn`, `dockerFindBinary`, `hasDocker`) + E2E helpers (`startTestServer`, `computeSkipReason`) + smoke test. Type check + lint pass.
+- 2026-04-15: T002 — `test:e2e` task added to turbo.json with `cache: false` and env passthrough.
+- 2026-04-15: T003 — `test:e2e` scripts added to server, ai-sdk, and root; default `test` scoped to `src/`.
+- 2026-04-15: T004-T009 — Six E2E test suites covering /v1/models, /v1/embeddings, /v1/rerank, /v1/chat/completions (501 stub), AI SDK provider, and TeiManager idle-timeout lifecycle. All gated by `E2E_SKIP_REASON` (RUN_E2E or CI).
+- 2026-04-15: T010 — CI job `test-e2e` added (pre-pulls TEI image, caches HF models, CI=true hard-fails on missing Docker).
+- 2026-04-15: T011 — README Development section added with opt-in rationale and how-it-works pointer to `docker-spawn.ts`.
 
 ## Decision Log
 
@@ -116,4 +121,7 @@ T002, T003 ────────────────────┬─→
 
 ## Surprises & Discoveries
 
-(to be updated during implementation)
+- The `huggingface/tap/text-embeddings-router` Homebrew formula advertised in `packages/tei/src/binary.ts` does not exist. The tap only provides unrelated tools. This forced the pivot to Docker.
+- `TeiManager`'s existing dependency injection (`spawnFn`, `findBinary`) turned out to be exactly the right seam for Docker substitution — no production code changes were needed to support E2E, which is a nice validation of the injection design.
+- Bun test lacks an `--ignore` flag; scoping default `test` to `bun test src/` was the cleanest way to keep E2E opt-in without a separate config file.
+- `@pleaseai/infer-ai-sdk`'s `createInferPlease` doesn't accept a preconfigured TeiManager, so the ai-sdk E2E test constructs `InferPleaseEmbeddingModel` directly. A future improvement could expose an optional `manager` parameter to make the public API as injectable as the underlying `TeiManager`.
