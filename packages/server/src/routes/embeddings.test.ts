@@ -31,6 +31,9 @@ function mockBackends(vectors: EmbedResponse): MockBackends {
           embedCalls.push({ baseUrl, request })
           return Promise.resolve(vectors)
         },
+        rerank() {
+          return Promise.resolve([])
+        },
       },
     },
   }
