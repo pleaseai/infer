@@ -68,9 +68,18 @@ For the Vercel AI SDK integration:
 - `packages/ai-sdk/src/index.ts` — `createInferPlease()` provider factory
 - `packages/ai-sdk/src/embedding-model.ts` — `EmbeddingModelV1<string>` implementation
 
-For the HTTP API (planned):
+For the HTTP API:
 
-- `packages/server/src/index.ts` — CLI entry point (skeleton)
+- `packages/server/src/index.ts` — CLI entry point (`infer-please start`)
+- `packages/server/src/cli.ts` — argv parsing and config resolution
+- `packages/server/src/app.ts` — `buildApp(config, backends)` wires routes + middleware + registry
+- `packages/server/src/server.ts` — bare Hono factory with auth + OpenAI-format error handler
+- `packages/server/src/config.ts` — zod schema + YAML loader for `infer-please.yaml`
+- `packages/server/src/registry.ts` — model lookup and type validation
+- `packages/server/src/errors.ts` — `ApiError` and OpenAI-format envelope helpers
+- `packages/server/src/middleware/auth.ts` — optional Bearer token middleware
+- `packages/server/src/routes/{models,embeddings,rerank,chat}.ts` — endpoint handlers
+- `packages/server/src/translators/{embeddings,rerank}.ts` — OpenAI/Cohere ↔ TEI shape conversion
 
 ## Module Reference
 
@@ -80,7 +89,7 @@ For the HTTP API (planned):
 |---------|----------|---------|-----------|
 | `packages/tei` | `@infer-please/tei` | TEI process management + API client | `src/index.ts` |
 | `packages/ai-sdk` | `@infer-please/ai-sdk` | Vercel AI SDK provider (wraps tei) | `src/index.ts` |
-| `packages/server` | `infer-please` | CLI + HTTP server (planned) | `src/index.ts` |
+| `packages/server` | `infer-please` | CLI + HTTP server (Hono routes + TEI dispatch) | `src/index.ts` |
 
 ### TEI Package Modules (`@infer-please/tei`)
 
@@ -100,12 +109,24 @@ For the HTTP API (planned):
 | `src/index.ts` | `createInferPlease()` provider factory | `embedding-model`, `@infer-please/tei` | user code |
 | `src/embedding-model.ts` | `EmbeddingModelV1<string>` implementation | `@infer-please/tei` | `index` |
 
-### Server Internal Modules (planned)
+### Server Internal Modules (`infer-please`)
 
 | Module | Purpose | Depends On | Depended By |
 |--------|---------|-----------|-------------|
-| `src/index.ts` | CLI entry point, starts server | `server.ts` | — |
-| `src/server.ts` | Hono HTTP app, route wiring | `routes/*`, `@infer-please/tei` | `index.ts` |
+| `src/index.ts` | CLI entry; spawns `Bun.serve` and a `TeiManager` | `app`, `cli`, `@infer-please/tei` | — |
+| `src/cli.ts` | argv parsing + `infer-please.yaml` resolution | `config` | `index` |
+| `src/app.ts` | `buildApp(config, backends)` wires registry, routes, backends | `server`, `routes/*`, `registry`, `@infer-please/tei` | `index`, integration tests |
+| `src/server.ts` | Hono factory with auth + OpenAI-format error handler | `errors`, `middleware/auth` | `app` |
+| `src/config.ts` | zod schema + YAML loader | `yaml`, `zod` | `cli`, `registry` |
+| `src/registry.ts` | Model lookup, list, type-validate (`requireType`) | `errors`, `config` | `app`, `routes/*` |
+| `src/errors.ts` | `ApiError` + OpenAI envelope factories | — | all routes, middleware, server |
+| `src/middleware/auth.ts` | Optional Bearer token check | `errors` | `server` |
+| `src/routes/models.ts` | `GET /v1/models[/:id]` | `registry`, `errors` | `app` |
+| `src/routes/embeddings.ts` | `POST /v1/embeddings` + `Backends`/`TeiBackend` interface | `registry`, `translators/embeddings`, `errors`, `@infer-please/tei` | `app`, `routes/rerank` |
+| `src/routes/rerank.ts` | `POST /v1/rerank` (Cohere shape) | `registry`, `translators/rerank`, `errors` | `app` |
+| `src/routes/chat.ts` | `POST /v1/chat/completions` (501 stub) | `errors` | `app` |
+| `src/translators/embeddings.ts` | OpenAI ↔ TEI request/response, base64 encode | `zod`, `@infer-please/tei` | `routes/embeddings` |
+| `src/translators/rerank.ts` | Cohere ↔ TEI request/response, `score → relevance_score` | `zod`, `@infer-please/tei` | `routes/rerank` |
 
 ## Architecture Invariants
 
@@ -141,6 +162,6 @@ For the HTTP API (planned):
 
 ---
 
-_Last updated: 2026-04-13_
+_Last updated: 2026-04-14_
 
 _Key ADRs: None yet — use `/standards:adr` to record architectural decisions._

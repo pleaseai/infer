@@ -68,7 +68,7 @@ Hono App (server.ts)
 - [x] T012 POST /v1/chat/completions — 501 stub (file: packages/server/src/routes/chat.ts) (depends on T005)
 - [x] T013 CLI `infer-please start [--port] [--config]` 진입점 (file: packages/server/src/index.ts) (depends on T005, T007, T009, T011, T012)
 - [x] T014 통합 테스트 — OpenAI Node SDK + @ai-sdk/openai-compatible + curl (file: packages/server/src/integration.test.ts) (depends on T013)
-- [ ] T015 ARCHITECTURE.md 업데이트 (server 서브시스템 레이어 문서화) + packages/server/README.md 작성 (file: ARCHITECTURE.md, packages/server/README.md) (depends on T013)
+- [x] T015 ARCHITECTURE.md 업데이트 (server 서브시스템 레이어 문서화) + packages/server/README.md 작성 (file: ARCHITECTURE.md, packages/server/README.md) (depends on T013)
 
 ## Dependencies
 
@@ -124,7 +124,22 @@ T013 → T014 (integration), T015 (docs)
 
 ## Progress
 
-(empty — /please:implement가 업데이트)
+- 2026-04-14: T001 Install deps — committed b8ca2d3
+- 2026-04-14: T002 Config schema + YAML loader — 12 tests
+- 2026-04-14: T003 OpenAI-format error helper — 8 tests
+- 2026-04-14: T004 Bearer auth middleware — 6 tests
+- 2026-04-14: T005 Hono app factory + error handler — 5 tests
+- 2026-04-14: T006 Model registry — 7 tests
+- 2026-04-14: T007 GET /v1/models endpoints — 5 tests
+- 2026-04-14: T008 Embedding translators — 11 tests (incl. base64)
+- 2026-04-14: T009 POST /v1/embeddings — 6 tests
+- 2026-04-14: T010 Rerank translators — 11 tests
+- 2026-04-14: T011 POST /v1/rerank — 5 tests
+- 2026-04-14: T012 Chat 501 stub — 2 tests
+- 2026-04-14: T013 CLI entry point — 11 tests
+- 2026-04-14: T014 Integration tests — 9 tests (OpenAI SDK + AI SDK + curl)
+- 2026-04-14: T015 ARCHITECTURE.md + README.md
+- **Final**: 101 tests pass; coverage 100% line / ≥78% branch on server files (>80% target met)
 
 ## Decision Log
 
@@ -135,4 +150,7 @@ T013 → T014 (integration), T015 (docs)
 
 ## Surprises & Discoveries
 
-(empty — 구현 중 기록)
+- **OpenAI Node SDK는 `encoding_format: "base64"`를 기본으로 보냄** — 응답에서 base64 문자열로 임베딩을 받아 클라이언트가 Float32Array로 디코딩한다. 호환을 위해 서버에서 base64 인코딩을 구현해야 했다. zod 스키마에 `'base64'` 추가, 런타임에 Float32Array → Buffer → base64.
+- **`expect(promise).rejects.toMatchObject(...)`가 Bun에서 promise를 await하지 않는 듯** — 직접 `try/catch`로 잡고 `expect(err.status).toBe(...)`로 검증해야 안정적이었다. 통합 테스트 작성 시 함정.
+- **Hono의 `app.fetch`는 `typeof fetch`와 시그니처가 다름** — Bun의 fetch 타입은 `preconnect` 메서드를 요구하므로 `FetchLike` 별도 타입을 정의하고 외부 SDK에 넘길 때 `as typeof fetch`로 캐스트 필요.
+- **TEI rerank 응답 포맷이 Cohere와 다름** — TEI는 `score` 필드, Cohere는 `relevance_score`. 또한 TEI는 정렬 보장을 명시하지 않으므로 트랜슬레이터에서 `sort` + `top_n` 슬라이스를 항상 수행.
