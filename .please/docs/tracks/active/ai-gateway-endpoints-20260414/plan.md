@@ -56,7 +56,7 @@ Hono App (server.ts)
 
 - [x] T001 [P] Install deps (`yaml`, `zod`, `@hono/zod-validator`; devDep `@infer-please/tei` workspace, `openai`, `@ai-sdk/openai-compatible`, `ai`) (file: packages/server/package.json)
 - [x] T002 Config schema + YAML loader (file: packages/server/src/config.ts) (depends on T001)
-- [ ] T003 [P] OpenAI-format error response helper (file: packages/server/src/errors.ts)
+- [x] T003 [P] OpenAI-format error response helper (file: packages/server/src/errors.ts)
 - [ ] T004 Auth middleware — Bearer 검증 (file: packages/server/src/middleware/auth.ts) (depends on T003)
 - [ ] T005 Hono app factory + global error handler (file: packages/server/src/server.ts) (depends on T002, T003, T004)
 - [ ] T006 [P] Model registry — lookup, list, type-validate (file: packages/server/src/registry.ts) (depends on T002)
