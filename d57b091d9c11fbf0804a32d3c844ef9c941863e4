@@ -1,0 +1,76 @@
+.please/docs/knowledge/tech-stack.md
+  91081dd49a3a078b 14,35-36
+.please/docs/tracks/completed/ai-gateway-endpoints-20260414/spec.md
+  91081dd49a3a078b 23-24,28,36,40,52,63,68-69
+.please/docs/knowledge/product.md
+  91081dd49a3a078b 24,33-34
+packages/server/src/index.ts
+  91081dd49a3a078b 3,34
+packages/server/src/cli.ts
+  91081dd49a3a078b 64,67-68,72
+package.json
+  91081dd49a3a078b 2
+README.md
+  91081dd49a3a078b 32,35,74,165,197,222,258-259
+packages/server/src/routes/rerank.test.ts
+  91081dd49a3a078b 1
+packages/tei/package.json
+  91081dd49a3a078b 2
+.please/docs/tracks/active/tei-integration-20260412/plan.md
+  91081dd49a3a078b 26,33,36,78,111-112
+packages/server/package.json
+  91081dd49a3a078b 2,9,21,28
+packages/server/README.md
+  91081dd49a3a078b 1,8,14,20,37
+packages/ai-sdk/src/embedding-model.ts
+  91081dd49a3a078b 2-3
+packages/server/src/backends.ts
+  91081dd49a3a078b 7
+.please/docs/product-specs/gateway/openai-endpoints.md
+  91081dd49a3a078b 34,38,84,88,124,129,136
+packages/ai-sdk/package.json
+  91081dd49a3a078b 2,20
+packages/ai-sdk/src/index.ts
+  91081dd49a3a078b 1-2,20
+packages/server/src/translators/rerank.ts
+  91081dd49a3a078b 1
+packages/server/src/routes/embeddings.test.ts
+  91081dd49a3a078b 1
+packages/ai-sdk/src/embedding-model.test.ts
+  91081dd49a3a078b 1
+ARCHITECTURE.md
+  91081dd49a3a078b 36,40,51,73,77,90-91,94,98,105,109-110,116-118,125,128-129,133,141,151
+.please/docs/tracks/active/tei-integration-20260412/spec.md
+  91081dd49a3a078b 11,19,23,40,53,66-67,79
+packages/server/src/translators/embeddings.ts
+  91081dd49a3a078b 1
+.please/docs/knowledge/product-guidelines.md
+  91081dd49a3a078b 27-30
+packages/server/src/app.ts
+  91081dd49a3a078b 1,5
+packages/server/src/integration.test.ts
+  91081dd49a3a078b 7
+.please/docs/tracks/completed/ai-gateway-endpoints-20260414/plan.md
+  91081dd49a3a078b 20,35,57,69,119,156
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "d57b091d9c11fbf0804a32d3c844ef9c941863e4",
+  "prompts": {
+    "91081dd49a3a078b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3e964165-ea07-4002-bf2e-2781b92b3bc1",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 708,
+      "total_deletions": 122,
+      "accepted_lines": 694,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/711726949cd1df73aa18a7ba657ec25d7d151143e9f1df5d5bd0f3fcfecdf4ec"
+    }
+  }
+}
