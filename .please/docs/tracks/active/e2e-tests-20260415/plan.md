@@ -63,8 +63,8 @@ Flow (per suite):
 ## Tasks
 
 - [x] T001 Create Docker adapter (`dockerSpawnFn`, `dockerFindBinary`) + E2E helpers (`startTestServer()`, `computeSkipReason()`) + smoke test (files: packages/server/test/e2e/docker-spawn.ts, packages/server/test/e2e/helpers.ts, packages/server/test/e2e/smoke.e2e.test.ts)
-- [ ] T002 Add `test:e2e` task to turbo.json with `cache: false` and `dependsOn: ["^build"]` (file: turbo.json)
-- [ ] T003 Add `test:e2e` npm script to server and ai-sdk packages (files: packages/server/package.json, packages/ai-sdk/package.json)
+- [x] T002 Add `test:e2e` task to turbo.json with `cache: false` and `env: [RUN_E2E, CI, HF_HOME]` (file: turbo.json)
+- [x] T003 Add `test:e2e` npm script to server, ai-sdk, and root packages; scope default `test` to `src/` so E2E is opt-in (files: packages/server/package.json, packages/ai-sdk/package.json, package.json)
 - [ ] T004 [P] E2E: `/v1/models` list and retrieve returns configured models (file: packages/server/test/e2e/models.e2e.test.ts) (depends on T001)
 - [ ] T005 [P] E2E: `/v1/embeddings` produces real embeddings via spawned TEI (file: packages/server/test/e2e/embeddings.e2e.test.ts) (depends on T001)
 - [ ] T006 [P] E2E: `/v1/rerank` returns sorted `relevance_score` results (file: packages/server/test/e2e/rerank.e2e.test.ts) (depends on T001)
