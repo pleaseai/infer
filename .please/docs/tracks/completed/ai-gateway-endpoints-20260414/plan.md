@@ -149,6 +149,32 @@ T013 → T014 (integration), T015 (docs)
 - 2026-04-14: 채팅 라우트는 등록만 하고 501 반환 — 계약 표면을 먼저 확정하여 OpenAI 클라이언트가 조기에 접근 가능함
 - 2026-04-14: TEI rerank 자체 포맷 대신 Cohere 호환 포맷 노출 — LangChain/LlamaIndex 호환성
 
+## Outcomes & Retrospective
+
+### What Was Shipped
+
+Single-port OpenAI-compatible HTTP gateway in `packages/server` — `/v1/models`, `/v1/embeddings` (with base64 support), `/v1/rerank` (Cohere shape), `/v1/chat/completions` (501 stub), optional Bearer auth, CLI (`infer-please start`). 101 tests / 0 fail / 100% line coverage on server code.
+
+### What Went Well
+
+- 수직 슬라이싱으로 매 커밋마다 green 상태 유지 — 실패해도 영향 범위 좁음.
+- 의존성 주입 (`Backends` 인터페이스) 덕분에 `TeiManager`/`TeiClient` 없이도 라우트를 단독 테스트 가능.
+- TDD 리듬이 15개 태스크에 걸쳐 일관되게 적용되었고, 통합 테스트 시점에 발견된 OpenAI SDK `encoding_format: "base64"` 이슈를 빠르게 흡수.
+- `/please:review`에서 나온 Important 6건을 모두 YAGNI/DRY 원칙에 맞춰 정리 (backends.ts 추출, `_shared.ts`, 힐난 스위치, 클라이언트 메모이제이션).
+
+### What Could Improve
+
+- 통합 테스트에서 Bun의 `rejects.toMatchObject`가 기대대로 동작하지 않아 `try/catch` 패턴으로 우회. Bun 이슈 추적 필요.
+- OpenAI SDK가 base64 encoding을 기본값으로 사용한다는 점을 사전에 파악하지 못해 중간 수정이 필요했음. 다음 트랙에서는 대상 SDK의 기본 wire 포맷을 먼저 실측.
+- `estimateTokens` 프록시가 정확한 토큰 수를 반환하지 않으므로 장기적으로는 실제 tokenizer (BPE 기반) 도입 고려 대상.
+
+### Tech Debt Created
+
+- `estimateTokens` / `estimateRerankTokens`: `chars/4` 근사치. 정확한 usage 보고 필요 시 real tokenizer로 교체.
+- `/v1/models/` (trailing slash) 동작 명세 미확정 — 현재 list 라우트에 매칭됨.
+- HTTP 레벨 rate limiting (429) 및 422 (unprocessable entity) 분기 미구현 — spec FR-6에 언급됨.
+- Config hot-reload 미지원 — 모델 등록 변경 시 프로세스 재시작 필요.
+
 ## Surprises & Discoveries
 
 - **OpenAI Node SDK는 `encoding_format: "base64"`를 기본으로 보냄** — 응답에서 base64 문자열로 임베딩을 받아 클라이언트가 Float32Array로 디코딩한다. 호환을 위해 서버에서 base64 인코딩을 구현해야 했다. zod 스키마에 `'base64'` 추가, 런타임에 Float32Array → Buffer → base64.
