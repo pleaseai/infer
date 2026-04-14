@@ -1,3 +1,4 @@
+import type { Buffer } from 'node:buffer'
 import { execFileSync, spawn } from 'node:child_process'
 import { homedir } from 'node:os'
 import { join } from 'node:path'
@@ -41,19 +42,27 @@ export function dockerSpawnFn(cmd: string[]): SubprocessLike {
   const containerId = execFileSync(
     'docker',
     [
-      'run', '-d', '--rm',
-      '-p', `${hostPort}:80`,
-      '-v', `${HF_CACHE_HOST}:/data`,
+      'run',
+      '-d',
+      '--rm',
+      '-p',
+      `${hostPort}:80`,
+      '-v',
+      `${HF_CACHE_HOST}:/data`,
       TEI_IMAGE,
-      '--model-id', modelId,
-      '--port', '80',
+      '--model-id',
+      modelId,
+      '--port',
+      '80',
     ],
     { encoding: 'utf-8', timeout: 30_000 },
   ).trim()
 
   const waitProc = spawn('docker', ['wait', containerId], { stdio: ['ignore', 'pipe', 'ignore'] })
   let codeOutput = ''
-  waitProc.stdout?.on('data', (chunk: Buffer) => { codeOutput += chunk.toString() })
+  waitProc.stdout?.on('data', (chunk: Buffer) => {
+    codeOutput += chunk.toString()
+  })
 
   const exited = new Promise<number>((resolve) => {
     waitProc.on('close', () => {

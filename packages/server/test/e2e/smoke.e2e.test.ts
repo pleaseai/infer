@@ -1,5 +1,6 @@
+import type { TestServerHandle } from './helpers'
 import { afterAll, beforeAll, describe, expect, it } from 'bun:test'
-import { E2E_SKIP_REASON, startTestServer, TEST_EMBED_MODEL, type TestServerHandle } from './helpers'
+import { E2E_SKIP_REASON, startTestServer, TEST_EMBED_MODEL } from './helpers'
 
 describe.skipIf(E2E_SKIP_REASON !== null)('e2e smoke: real TEI via Docker', () => {
   let handle: TestServerHandle
