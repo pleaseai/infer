@@ -1,0 +1,26 @@
+.please/docs/tracks/active/e2e-tests-20260415/metadata.json
+  30a7e1d8fe3d48b8 4
+.please/docs/tracks.jsonl
+  30a7e1d8fe3d48b8 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "f1d782c759e72d31fb2171d0f80bdfbee3f4651e",
+  "prompts": {
+    "30a7e1d8fe3d48b8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3e2c3c03-f200-41ad-a58a-dc987b8251bb",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 2,
+      "total_deletions": 2,
+      "accepted_lines": 2,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/8f4803b45c5643cf97e903f10c9d77eba48f774b8f9f41ba415d475bb4a39367"
+    }
+  }
+}
