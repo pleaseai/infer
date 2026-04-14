@@ -1,0 +1,24 @@
+.please/docs/product-specs/gateway/openai-endpoints.md
+  91081dd49a3a078b 128
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "b5821eb81894b434a6bc19752b5a95e9e7056178",
+  "prompts": {
+    "91081dd49a3a078b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3e964165-ea07-4002-bf2e-2781b92b3bc1",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 1,
+      "total_deletions": 1,
+      "accepted_lines": 587,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/593d48a169d60f192e393a5d7de33855b64f56a64759711dace2136b339ae98a"
+    }
+  }
+}
