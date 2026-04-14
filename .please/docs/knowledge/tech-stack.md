@@ -10,6 +10,8 @@
 | Category | Technology | Rationale |
 |----------|-----------|-----------|
 | HTTP Framework | **Hono** | Lightweight, fast, Bun-native, middleware ecosystem |
+| HTTP Schema Validation | **zod** + `@hono/zod-validator` | 선언적 요청/응답 검증으로 스키마를 한 곳에서 관리 |
+| Configuration | **yaml** | `infer-please.yaml` 파서 (modern, ESM, type-safe) |
 | Embedding/Rerank Engine | **HuggingFace TEI** | Rust-based, Flash Attention, dynamic batching, supports both embedding and reranking |
 | Chat Engine | **llama.cpp server** | C++ inference, broad GGUF model support, CPU/GPU flexible |
 | Client SDK | **Vercel AI SDK** | Standard AI SDK for TypeScript, provider pattern |

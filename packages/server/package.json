@@ -17,13 +17,20 @@
     "test": "bun test"
   },
   "dependencies": {
-    "hono": "^4"
+    "@hono/zod-validator": "^0.4",
+    "@infer-please/tei": "workspace:*",
+    "hono": "^4",
+    "yaml": "^2",
+    "zod": "^3"
   },
   "devDependencies": {
+    "@ai-sdk/openai-compatible": "^0.2",
     "@infer-please/ai-sdk": "workspace:*",
     "@pleaseai/eslint-config": "latest",
+    "ai": "^4",
     "bun-types": "latest",
     "eslint": "^9",
+    "openai": "^4",
     "typescript": "^5"
   }
 }

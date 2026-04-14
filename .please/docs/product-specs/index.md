@@ -1,6 +1,7 @@
 # Product Specs Index
 
-> Auto-maintained by /please:spec --product.
+> Auto-maintained by /please:sync-specs.
 
-| Spec | Feature | Created | Related Tracks |
-|------|---------|---------|----------------|
+| Spec | Domain | Feature | Created | Related Tracks |
+|------|--------|---------|---------|----------------|
+| SPEC-001 | gateway | openai-endpoints | 2026-04-14 | [ai-gateway-endpoints-20260414] |
