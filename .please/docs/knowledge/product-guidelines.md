@@ -24,10 +24,10 @@ Works with any OpenAI-compatible client. Provides a dedicated Vercel AI SDK prov
 - Model names use HuggingFace Hub format: `org/model-name`
 
 ## Naming Conventions
-- Package: `infer-please` (npm)
-- SDK package: `@infer-please/ai-sdk`
-- CLI command: `infer-please`
-- Config file: `infer-please.yaml`
+- Package: `@pleaseai/infer` (npm)
+- SDK package: `@pleaseai/infer-ai-sdk`
+- CLI command: `infer`
+- Config file: `infer.yaml`
 - Default port: `3141`
 
 ## Error Handling

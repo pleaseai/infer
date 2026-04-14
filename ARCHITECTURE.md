@@ -33,11 +33,11 @@ Dependencies flow downward only. Lower layers must not import upper layers.
 │  Direct: createTeiManager(), client.embed()      │
 ├─────────────────────────────────────────────────┤
 │            SDK Adapter Layer                     │
-│  @infer-please/ai-sdk                            │
+│  @pleaseai/infer-ai-sdk                            │
 │  EmbeddingModelV1 → TeiManager + TeiClient       │
 ├─────────────────────────────────────────────────┤
 │              Core Layer                          │
-│  @infer-please/tei                               │
+│  @pleaseai/infer-tei                               │
 │  TeiManager — process lifecycle, health, pool    │
 │  TeiClient — TEI HTTP API (embed, rerank)        │
 │  PortPool — dynamic port allocation              │
@@ -48,7 +48,7 @@ Dependencies flow downward only. Lower layers must not import upper layers.
 │  fetch — HTTP to TEI process (localhost)          │
 ├─────────────────────────────────────────────────┤
 │           Interface Layer (planned)              │
-│  CLI (infer-please) + HTTP API (Hono routes)     │
+│  CLI (infer) + HTTP API (Hono routes)     │
 │  /v1/embeddings, /v1/rerank, /v1/models          │
 └─────────────────────────────────────────────────┘
 ```
@@ -70,11 +70,11 @@ For the Vercel AI SDK integration:
 
 For the HTTP API:
 
-- `packages/server/src/index.ts` — CLI entry point (`infer-please start`)
+- `packages/server/src/index.ts` — CLI entry point (`infer start`)
 - `packages/server/src/cli.ts` — argv parsing and config resolution
 - `packages/server/src/app.ts` — `buildApp(config, backends)` wires routes + middleware + registry
 - `packages/server/src/server.ts` — bare Hono factory with auth + OpenAI-format error handler
-- `packages/server/src/config.ts` — zod schema + YAML loader for `infer-please.yaml`
+- `packages/server/src/config.ts` — zod schema + YAML loader for `infer.yaml`
 - `packages/server/src/registry.ts` — model lookup and type validation
 - `packages/server/src/errors.ts` — `ApiError` and OpenAI-format envelope helpers
 - `packages/server/src/middleware/auth.ts` — optional Bearer token middleware
@@ -87,50 +87,50 @@ For the HTTP API:
 
 | Package | npm Name | Purpose | Key Entry |
 |---------|----------|---------|-----------|
-| `packages/tei` | `@infer-please/tei` | TEI process management + API client | `src/index.ts` |
-| `packages/ai-sdk` | `@infer-please/ai-sdk` | Vercel AI SDK provider (wraps tei) | `src/index.ts` |
+| `packages/tei` | `@pleaseai/infer-tei` | TEI process management + API client | `src/index.ts` |
+| `packages/ai-sdk` | `@pleaseai/infer-ai-sdk` | Vercel AI SDK provider (wraps tei) | `src/index.ts` |
 | `packages/server` | `infer-please` | CLI + HTTP server (Hono routes + TEI dispatch) | `src/index.ts` |
 
-### TEI Package Modules (`@infer-please/tei`)
+### TEI Package Modules (`@pleaseai/infer-tei`)
 
 | Module | Purpose | Depends On | Depended By |
 |--------|---------|-----------|-------------|
-| `src/index.ts` | Barrel export + `createTeiManager()` factory | all modules | `@infer-please/ai-sdk` |
+| `src/index.ts` | Barrel export + `createTeiManager()` factory | all modules | `@pleaseai/infer-ai-sdk` |
 | `src/tei-manager.ts` | TEI process lifecycle (spawn, health check, idle timeout, crash recovery) | `binary`, `port-pool`, `types` | `index` |
 | `src/tei-client.ts` | TEI HTTP API client (embed, rerank) | `types` | `index`, `ai-sdk` |
 | `src/port-pool.ts` | Dynamic port allocation/release (Set-based) | — | `tei-manager` |
 | `src/binary.ts` | `text-embeddings-router` binary discovery on $PATH | — | `tei-manager` |
 | `src/types.ts` | Type definitions (TeiProcess, EmbedRequest, etc.) | — | all modules |
 
-### AI SDK Package Modules (`@infer-please/ai-sdk`)
+### AI SDK Package Modules (`@pleaseai/infer-ai-sdk`)
 
 | Module | Purpose | Depends On | Depended By |
 |--------|---------|-----------|-------------|
-| `src/index.ts` | `createInferPlease()` provider factory | `embedding-model`, `@infer-please/tei` | user code |
-| `src/embedding-model.ts` | `EmbeddingModelV1<string>` implementation | `@infer-please/tei` | `index` |
+| `src/index.ts` | `createInferPlease()` provider factory | `embedding-model`, `@pleaseai/infer-tei` | user code |
+| `src/embedding-model.ts` | `EmbeddingModelV1<string>` implementation | `@pleaseai/infer-tei` | `index` |
 
 ### Server Internal Modules (`infer-please`)
 
 | Module | Purpose | Depends On | Depended By |
 |--------|---------|-----------|-------------|
-| `src/index.ts` | CLI entry; spawns `Bun.serve` and a `TeiManager` | `app`, `cli`, `@infer-please/tei` | — |
-| `src/cli.ts` | argv parsing + `infer-please.yaml` resolution | `config` | `index` |
-| `src/app.ts` | `buildApp(config, backends)` wires registry, routes, backends | `server`, `routes/*`, `registry`, `@infer-please/tei` | `index`, integration tests |
+| `src/index.ts` | CLI entry; spawns `Bun.serve` and a `TeiManager` | `app`, `cli`, `@pleaseai/infer-tei` | — |
+| `src/cli.ts` | argv parsing + `infer.yaml` resolution | `config` | `index` |
+| `src/app.ts` | `buildApp(config, backends)` wires registry, routes, backends | `server`, `routes/*`, `registry`, `@pleaseai/infer-tei` | `index`, integration tests |
 | `src/server.ts` | Hono factory with auth + OpenAI-format error handler | `errors`, `middleware/auth` | `app` |
 | `src/config.ts` | zod schema + YAML loader | `yaml`, `zod` | `cli`, `registry` |
 | `src/registry.ts` | Model lookup, list, type-validate (`requireType`) | `errors`, `config` | `app`, `routes/*` |
 | `src/errors.ts` | `ApiError` + OpenAI envelope factories | — | all routes, middleware, server |
 | `src/middleware/auth.ts` | Optional Bearer token check | `errors` | `server` |
 | `src/routes/models.ts` | `GET /v1/models[/:id]` | `registry`, `errors` | `app` |
-| `src/routes/embeddings.ts` | `POST /v1/embeddings` + `Backends`/`TeiBackend` interface | `registry`, `translators/embeddings`, `errors`, `@infer-please/tei` | `app`, `routes/rerank` |
+| `src/routes/embeddings.ts` | `POST /v1/embeddings` + `Backends`/`TeiBackend` interface | `registry`, `translators/embeddings`, `errors`, `@pleaseai/infer-tei` | `app`, `routes/rerank` |
 | `src/routes/rerank.ts` | `POST /v1/rerank` (Cohere shape) | `registry`, `translators/rerank`, `errors` | `app` |
 | `src/routes/chat.ts` | `POST /v1/chat/completions` (501 stub) | `errors` | `app` |
-| `src/translators/embeddings.ts` | OpenAI ↔ TEI request/response, base64 encode | `zod`, `@infer-please/tei` | `routes/embeddings` |
-| `src/translators/rerank.ts` | Cohere ↔ TEI request/response, `score → relevance_score` | `zod`, `@infer-please/tei` | `routes/rerank` |
+| `src/translators/embeddings.ts` | OpenAI ↔ TEI request/response, base64 encode | `zod`, `@pleaseai/infer-tei` | `routes/embeddings` |
+| `src/translators/rerank.ts` | Cohere ↔ TEI request/response, `score → relevance_score` | `zod`, `@pleaseai/infer-tei` | `routes/rerank` |
 
 ## Architecture Invariants
 
-**Single responsibility for backends**: Each backend type (TEI, llama.cpp) has exactly one dedicated package. TEI process lifecycle lives in `@infer-please/tei`. All `Bun.spawn()` calls for TEI are in `TeiManager`. Do NOT scatter spawn calls across route handlers or SDK adapters.
+**Single responsibility for backends**: Each backend type (TEI, llama.cpp) has exactly one dedicated package. TEI process lifecycle lives in `@pleaseai/infer-tei`. All `Bun.spawn()` calls for TEI are in `TeiManager`. Do NOT scatter spawn calls across route handlers or SDK adapters.
 
 **OpenAI API compatibility at the boundary**: When the HTTP server is implemented, all HTTP responses must conform to OpenAI API response shapes. Internal backend protocols (TEI REST API) are translated in the provider/client layer, never exposed to callers.
 
@@ -138,7 +138,7 @@ For the HTTP API:
 
 **No bundled binaries**: TEI and llama.cpp binaries are external prerequisites. Do NOT attempt to bundle, download, or compile these binaries as part of the build. The server should fail fast with a clear error if a required binary is not found on `$PATH`.
 
-**Port pool isolation**: Backend processes use ports from a configured range (default: 8080-8099 for TEI). The `PortPool` class in `@infer-please/tei` allocates and reclaims ports. Do NOT hardcode port numbers in routes or SDK adapters.
+**Port pool isolation**: Backend processes use ports from a configured range (default: 8080-8099 for TEI). The `PortPool` class in `@pleaseai/infer-tei` allocates and reclaims ports. Do NOT hardcode port numbers in routes or SDK adapters.
 
 ## Cross-Cutting Concerns
 
@@ -148,7 +148,7 @@ For the HTTP API:
 
 **Testing**: Bun test runner (`bun test`). Unit tests use dependency injection — `TeiManager` accepts injectable `spawnFn`, `fetchFn`, and `findBinary` functions. `TeiClient` accepts injectable `fetchFn`. No real TEI/llama binaries required for tests. Coverage target: >80% for new code.
 
-**Configuration**: Optional `infer-please.yaml` at project root. Environment variables override config file values. Sensible defaults for all settings (port 3141, idle timeout 300s).
+**Configuration**: Optional `infer.yaml` at project root. Environment variables override config file values. Sensible defaults for all settings (port 3141, idle timeout 300s).
 
 **Process health checks**: After spawning a backend process, the manager polls its health endpoint until ready (with timeout). Requests that arrive during startup are queued, not rejected.
 

@@ -21,7 +21,7 @@ Cloud embedding APIs are affordable, but when you need **reranking**, **privacy*
 3. **Embedding** — OpenAI-compatible `/v1/embeddings` via TEI backend
 4. **Reranking** — `/v1/rerank` endpoint via TEI backend (key differentiator)
 5. **Chat** — `/v1/chat/completions` via llama.cpp server backend
-6. **SDK integration** — `@infer-please/ai-sdk` Vercel AI SDK provider package
+6. **SDK integration** — `@pleaseai/infer-ai-sdk` Vercel AI SDK provider package
 
 ## Key Differentiators
 - **Reranking support** — Unlike Ollama and Vercel AI Gateway
@@ -30,8 +30,8 @@ Cloud embedding APIs are affordable, but when you need **reranking**, **privacy*
 - **Backend-agnostic** — TEI for embedding/rerank, llama.cpp for chat; external binaries managed via `Bun.spawn()`
 
 ## Distribution
-- npm/bun global install: `bun add -g infer-please`
-- CLI: `infer-please start`
+- npm/bun global install: `bun add -g @pleaseai/infer`
+- CLI: `infer start`
 
 ## Part Of
 [Please Tools](https://pleaseai.dev) ecosystem

@@ -1,4 +1,4 @@
-import type { TeiClient, TeiManager } from '@infer-please/tei'
+import type { TeiClient, TeiManager } from '@pleaseai/infer-tei'
 import { describe, expect, it, mock } from 'bun:test'
 import { InferPleaseEmbeddingModel } from './embedding-model'
 

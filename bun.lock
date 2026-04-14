@@ -9,11 +9,11 @@
       },
     },
     "packages/ai-sdk": {
-      "name": "@infer-please/ai-sdk",
+      "name": "@pleaseai/infer-ai-sdk",
       "version": "0.0.0",
       "dependencies": {
         "@ai-sdk/provider": "^1",
-        "@infer-please/tei": "workspace:*",
+        "@pleaseai/infer-tei": "workspace:*",
       },
       "devDependencies": {
         "@pleaseai/eslint-config": "latest",
@@ -27,22 +27,22 @@
       },
     },
     "packages/server": {
-      "name": "infer-please",
+      "name": "@pleaseai/infer",
       "version": "0.0.0",
       "bin": {
-        "infer-please": "./dist/index.js",
+        "infer": "./dist/index.js",
       },
       "dependencies": {
         "@hono/zod-validator": "^0.4",
-        "@infer-please/tei": "workspace:*",
+        "@pleaseai/infer-tei": "workspace:*",
         "hono": "^4",
         "yaml": "^2",
         "zod": "^3",
       },
       "devDependencies": {
         "@ai-sdk/openai-compatible": "^0.2",
-        "@infer-please/ai-sdk": "workspace:*",
         "@pleaseai/eslint-config": "latest",
+        "@pleaseai/infer-ai-sdk": "workspace:*",
         "ai": "^4",
         "bun-types": "latest",
         "eslint": "^9",
@@ -51,7 +51,7 @@
       },
     },
     "packages/tei": {
-      "name": "@infer-please/tei",
+      "name": "@pleaseai/infer-tei",
       "version": "0.0.0",
       "devDependencies": {
         "@pleaseai/eslint-config": "latest",
@@ -130,10 +130,6 @@
 
     "@humanwhocodes/retry": ["@humanwhocodes/retry@0.4.3", "", {}, "sha512-bV0Tgo9K4hfPCek+aMAn81RppFKv2ySDQeMoSZuvTASywNTnVJCArCZE2FWqpvIatKu7VMRLWlR1EazvVhDyhQ=="],
 
-    "@infer-please/ai-sdk": ["@infer-please/ai-sdk@workspace:packages/ai-sdk"],
-
-    "@infer-please/tei": ["@infer-please/tei@workspace:packages/tei"],
-
     "@jridgewell/sourcemap-codec": ["@jridgewell/sourcemap-codec@1.5.5", "", {}, "sha512-cYQ9310grqxueWbl+WuIUIaiUaDcj7WOq5fVhEljNVgRfOUhY9fy2zTvfoqWsnebh8Sl70VScFbICvJnLKB0Og=="],
 
     "@opentelemetry/api": ["@opentelemetry/api@1.9.0", "", {}, "sha512-3giAOQvZiH5F9bMlMiv8+GSPMeqg0dbaeo58/0SlA9sxSqZhnUtxzX9/2FzyhS9sWQf5S0GJE0AKBrFqjpeYcg=="],
@@ -143,6 +139,12 @@
     "@pkgr/core": ["@pkgr/core@0.2.9", "", {}, "sha512-QNqXyfVS2wm9hweSYD2O7F0G06uurj9kZ96TRQE5Y9hU7+tgdZwIkbAKc5Ocy1HxEY2kuDQa6cQ1WRs/O5LFKA=="],
 
     "@pleaseai/eslint-config": ["@pleaseai/eslint-config@0.0.1", "", { "dependencies": { "@antfu/eslint-config": "^7.7.0", "eslint-plugin-package-json": "^0.30.0" }, "peerDependencies": { "eslint": "^9.10.0 || ^10.0.0" } }, "sha512-4NPY88bWPo63mL1aPYpOX2JyhLpPC25RrYEMY75L1BiBhvkaMYLORNpRNGAUkxCxRLfqLDKMsjfX6PkSlVEgbg=="],
+
+    "@pleaseai/infer": ["@pleaseai/infer@workspace:packages/server"],
+
+    "@pleaseai/infer-ai-sdk": ["@pleaseai/infer-ai-sdk@workspace:packages/ai-sdk"],
+
+    "@pleaseai/infer-tei": ["@pleaseai/infer-tei@workspace:packages/tei"],
 
     "@sindresorhus/base62": ["@sindresorhus/base62@1.0.0", "", {}, "sha512-TeheYy0ILzBEI/CO55CP6zJCSdSWeRtGnHy8U8dWSUH4I68iqTsy7HkMktR4xakThc9jotkPQUXT4ITdbV7cHA=="],
 
@@ -485,8 +487,6 @@
     "imurmurhash": ["imurmurhash@0.1.4", "", {}, "sha512-JmXMZ6wuvDmLiHEml9ykzqO6lwFbof0GG4IkcGaENdCRDDmMVnny7s5HsIgHCbaq0w2MyPhDqkhTUgS2LU2PHA=="],
 
     "indent-string": ["indent-string@5.0.0", "", {}, "sha512-m6FAo/spmsW2Ab2fU35JTYwtOKa2yAwXSwgjSv1TJzh4Mh7mC3lzAOVLBprb72XsTrgkEIsl7YrFNAiDiRhIGg=="],
-
-    "infer-please": ["infer-please@workspace:packages/server"],
 
     "is-builtin-module": ["is-builtin-module@5.0.0", "", { "dependencies": { "builtin-modules": "^5.0.0" } }, "sha512-f4RqJKBUe5rQkJ2eJEJBXSticB3hGbN9j0yxxMQFqIW89Jp9WYFtzfTcRlstDKVUTRzSOTLKRfO9vIztenwtxA=="],
 

@@ -29,10 +29,10 @@ brew install text-embeddings-inference  # or Docker
 brew install llama.cpp                  # for chat (optional)
 
 # Install
-bun add -g infer-please
+bun add -g @pleaseai/infer
 
 # Start
-infer-please start
+infer start
 # Server running on http://localhost:3141
 ```
 
@@ -71,7 +71,7 @@ const chat = await client.chat.completions.create({
 
 ```typescript
 import { embed, embedMany, generateText } from "ai";
-import { createInferPlease } from "@infer-please/ai-sdk";
+import { createInferPlease } from "@pleaseai/infer-ai-sdk";
 
 const infer = createInferPlease(); // defaults to localhost:3141
 
@@ -162,7 +162,7 @@ infer-please (:3141)
 | Hybrid search pipeline (QMD-like) | 🖥️ **infer-please** |
 | Privacy / air-gapped | 🖥️ **infer-please** |
 | Low latency (<10ms) | 🖥️ **infer-please** |
-| Flexible — cloud first, local fallback | 🖥️ **@infer-please/ai-sdk** |
+| Flexible — cloud first, local fallback | 🖥️ **@pleaseai/infer-ai-sdk** |
 
 ## Popular Models
 
@@ -194,7 +194,7 @@ infer-please (:3141)
 ## Configuration
 
 ```yaml
-# infer-please.yaml (optional)
+# infer.yaml (optional)
 port: 3141
 
 tei:
@@ -219,7 +219,7 @@ models:
 ```
 infer-please/
 ├── packages/
-│   └── ai-sdk/                # @infer-please/ai-sdk
+│   └── ai-sdk/                # @pleaseai/infer-ai-sdk
 │       └── index.ts           #   Vercel AI SDK provider
 ├── src/
 │   ├── index.ts               # CLI entry point
@@ -255,8 +255,8 @@ infer-please/
 - [ ] OpenAI-compatible `/v1/rerank` proxy
 - [ ] Model → TEI instance routing
 - [ ] llama.cpp server chat integration
-- [ ] `@infer-please/ai-sdk` provider package
-- [ ] CLI (`infer-please start`, `models`, `pull`)
+- [ ] `@pleaseai/infer-ai-sdk` provider package
+- [ ] CLI (`infer start`, `models`, `pull`)
 - [ ] Pre-load models on startup
 - [ ] Docker mode (TEI as containers instead of binary)
 - [ ] Streaming chat (SSE)

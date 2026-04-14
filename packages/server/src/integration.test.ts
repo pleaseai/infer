@@ -4,7 +4,7 @@ import type {
   RerankRequest,
   RerankResponse,
   TeiProcess,
-} from '@infer-please/tei'
+} from '@pleaseai/infer-tei'
 import type { Backends } from './routes/embeddings'
 import { createOpenAICompatible } from '@ai-sdk/openai-compatible'
 import { embed, embedMany } from 'ai'

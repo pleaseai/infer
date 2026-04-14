@@ -1,5 +1,5 @@
-import type { TeiManagerOptions } from '@infer-please/tei'
-import { createTeiManager } from '@infer-please/tei'
+import type { TeiManagerOptions } from '@pleaseai/infer-tei'
+import { createTeiManager } from '@pleaseai/infer-tei'
 import { InferPleaseEmbeddingModel } from './embedding-model'
 
 export interface InferPleaseProvider {
@@ -17,4 +17,4 @@ export function createInferPlease(options?: Partial<TeiManagerOptions>): InferPl
 }
 
 export { InferPleaseEmbeddingModel } from './embedding-model'
-export type { TeiManagerOptions } from '@infer-please/tei'
+export type { TeiManagerOptions } from '@pleaseai/infer-tei'

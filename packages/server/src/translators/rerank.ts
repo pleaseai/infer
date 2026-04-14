@@ -1,4 +1,4 @@
-import type { RerankRequest, RerankResponse } from '@infer-please/tei'
+import type { RerankRequest, RerankResponse } from '@pleaseai/infer-tei'
 import { z } from 'zod'
 
 export const cohereRerankRequestSchema = z.object({

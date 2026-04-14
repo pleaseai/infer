@@ -1,6 +1,6 @@
 import type { EmbeddingModelV1 } from '@ai-sdk/provider'
-import type { TeiManager } from '@infer-please/tei'
-import { TeiClient } from '@infer-please/tei'
+import type { TeiManager } from '@pleaseai/infer-tei'
+import { TeiClient } from '@pleaseai/infer-tei'
 
 /**
  * Implements the Vercel AI SDK EmbeddingModelV1<string> interface backed by

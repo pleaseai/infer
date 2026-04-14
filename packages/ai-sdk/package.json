@@ -1,5 +1,5 @@
 {
-  "name": "@infer-please/ai-sdk",
+  "name": "@pleaseai/infer-ai-sdk",
   "type": "module",
   "version": "0.0.0",
   "exports": {
@@ -17,7 +17,7 @@
   },
   "dependencies": {
     "@ai-sdk/provider": "^1",
-    "@infer-please/tei": "workspace:*"
+    "@pleaseai/infer-tei": "workspace:*"
   },
   "devDependencies": {
     "@pleaseai/eslint-config": "latest",

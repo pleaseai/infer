@@ -8,7 +8,7 @@ product_spec_domain: inference/tei
 
 ## Overview
 
-TEI(Text Embeddings Inference) 바이너리를 Bun.spawn()으로 관리하여 embedding과 reranking을 지원하는 코어 패키지(`@infer-please/tei`)와 Vercel AI SDK provider(`@infer-please/ai-sdk`)를 구현한다.
+TEI(Text Embeddings Inference) 바이너리를 Bun.spawn()으로 관리하여 embedding과 reranking을 지원하는 코어 패키지(`@pleaseai/infer-tei`)와 Vercel AI SDK provider(`@pleaseai/infer-ai-sdk`)를 구현한다.
 
 사용자는 모델명만 지정하면 TEI 프로세스가 자동으로 시작되고, idle timeout 후 자동 종료된다. AI SDK의 `embed()` 함수로 즉시 사용 가능하다.
 
@@ -16,11 +16,11 @@ TEI(Text Embeddings Inference) 바이너리를 Bun.spawn()으로 관리하여 em
 
 ```
 ┌─────────────────────┐
-│ @infer-please/ai-sdk │  AI SDK EmbeddingModel adapter
+│ @pleaseai/infer-ai-sdk │  AI SDK EmbeddingModel adapter
 └──────────┬──────────┘
            │
 ┌──────────┴──────────┐
-│ @infer-please/tei    │  TEI Manager + API Client
+│ @pleaseai/infer-tei    │  TEI Manager + API Client
 │  - Bun.spawn()       │
 │  - health check      │
 │  - idle timeout      │
@@ -37,7 +37,7 @@ TEI(Text Embeddings Inference) 바이너리를 Bun.spawn()으로 관리하여 em
 
 ### Functional Requirements
 
-#### packages/tei (`@infer-please/tei`)
+#### packages/tei (`@pleaseai/infer-tei`)
 
 - [ ] FR-1: TEI 바이너리(`text-embeddings-router`)를 $PATH에서 탐색하고, 없으면 설치 안내와 함께 에러를 발생시킨다
 - [ ] FR-2: 모델명을 지정하여 TEI 프로세스를 Bun.spawn()으로 시작한다 (모델당 1개 프로세스)
@@ -50,7 +50,7 @@ TEI(Text Embeddings Inference) 바이너리를 Bun.spawn()으로 관리하여 em
 - [ ] FR-9: TEI HTTP API를 호출하여 reranking 결과를 반환한다 (POST /rerank)
 - [ ] FR-10: 모든 활성 TEI 프로세스를 조회하고 특정 모델의 프로세스를 수동 종료할 수 있다
 
-#### packages/ai-sdk (`@infer-please/ai-sdk`)
+#### packages/ai-sdk (`@pleaseai/infer-ai-sdk`)
 
 - [ ] FR-11: Vercel AI SDK의 EmbeddingModel 인터페이스를 구현하여 `embed()` 함수로 사용 가능하다
 - [ ] FR-12: `createInferPlease()` provider factory를 제공하여 모델명으로 접근한다
@@ -63,8 +63,8 @@ TEI(Text Embeddings Inference) 바이너리를 Bun.spawn()으로 관리하여 em
 
 ## Acceptance Criteria
 
-- [ ] AC-1: `@infer-please/tei`로 TEI 프로세스를 시작하고 embedding 결과를 받을 수 있다
-- [ ] AC-2: `@infer-please/ai-sdk`의 `embed()` 함수로 텍스트 임베딩을 수행할 수 있다
+- [ ] AC-1: `@pleaseai/infer-tei`로 TEI 프로세스를 시작하고 embedding 결과를 받을 수 있다
+- [ ] AC-2: `@pleaseai/infer-ai-sdk`의 `embed()` 함수로 텍스트 임베딩을 수행할 수 있다
 - [ ] AC-3: idle timeout 후 TEI 프로세스가 자동 종료되고, 다음 요청에서 자동 재시작된다
 - [ ] AC-4: text-embeddings-router가 설치되지 않은 환경에서 명확한 에러 메시지가 표시된다
 - [ ] AC-5: 단위 테스트가 80% 이상 커버리지를 달성한다
@@ -76,7 +76,7 @@ TEI(Text Embeddings Inference) 바이너리를 Bun.spawn()으로 관리하여 em
 - Transformers.js 백엔드
 - oRPC / 캐시 레이어
 - TEI 바이너리 자동 설치 / 다운로드
-- 설정 파일(infer-please.yaml) 지원 — 별도 track
+- 설정 파일(infer.yaml) 지원 — 별도 track
 
 ## Assumptions
 
