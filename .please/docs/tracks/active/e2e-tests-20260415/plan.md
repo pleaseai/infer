@@ -71,8 +71,8 @@ Flow (per suite):
 - [x] T007 [P] E2E: `/v1/chat/completions` returns 501 with OpenAI-format error (file: packages/server/test/e2e/chat.e2e.test.ts)
 - [x] T008 [P] E2E: AI SDK `InferPleaseEmbeddingModel` with Docker-backed TeiManager (file: packages/ai-sdk/test/e2e/provider.e2e.test.ts)
 - [x] T009 E2E: Idle-timeout shutdown observed; next request respawns successfully (file: packages/server/test/e2e/lifecycle.e2e.test.ts)
-- [ ] T010 Add `test:e2e` CI job to `.github/workflows/ci.yml` (Docker available by default on `ubuntu-latest`) with HF model cache (file: .github/workflows/ci.yml) (depends on T003, T009)
-- [ ] T011 Document how to run E2E locally (Docker Desktop requirement, first-run image pull, model cache) in README (file: README.md) (depends on T010)
+- [x] T010 Add `test:e2e` CI job to `.github/workflows/ci.yml` (Docker pre-pull + HF model cache + CI=true env gate) (file: .github/workflows/ci.yml)
+- [x] T011 Document how to run E2E locally (Development section: Docker Desktop requirement, first-run image pull, model cache, skip-not-fail behavior) in README (file: README.md)
 
 ## Dependencies
 
