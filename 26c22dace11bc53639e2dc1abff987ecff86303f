@@ -1,0 +1,28 @@
+.github/workflows/ci.yml
+  30a7e1d8fe3d48b8 92-122
+.please/docs/tracks/active/e2e-tests-20260415/plan.md
+  30a7e1d8fe3d48b8 74-75
+README.md
+  30a7e1d8fe3d48b8 266-297
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "26c22dace11bc53639e2dc1abff987ecff86303f",
+  "prompts": {
+    "30a7e1d8fe3d48b8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3e2c3c03-f200-41ad-a58a-dc987b8251bb",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 65,
+      "total_deletions": 2,
+      "accepted_lines": 65,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/1f4d8ca6c15dc67e5b20a5e505e274777b9c60c82a091420a440ca51ce25213c"
+    }
+  }
+}
