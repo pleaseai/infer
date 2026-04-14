@@ -1,0 +1,28 @@
+.please/docs/tracks/active/ai-gateway-endpoints-20260414/plan.md
+  012fb6e342e03cfe 71,127-142,153-156
+ARCHITECTURE.md
+  012fb6e342e03cfe 71,73-82,92,112,116-129,165
+packages/server/README.md
+  012fb6e342e03cfe 1-126
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "4f041036ab37c41832257c069926723761781d03",
+  "prompts": {
+    "012fb6e342e03cfe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "4cbec605-080f-43bd-8519-b778cb420d2e",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 301,
+      "total_deletions": 10,
+      "accepted_lines": 301,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/9fb1bac0ad9ecc6361692d270641bdc5e88cff16ecec3f0cc8bf26089c9f1266"
+    }
+  }
+}
