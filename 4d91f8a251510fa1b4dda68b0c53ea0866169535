@@ -1,0 +1,26 @@
+.github/workflows/ci.yml
+  c900495a3834a400 23-26,42-45,61-64,80-83
+.nvmrc
+  c900495a3834a400 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "4d91f8a251510fa1b4dda68b0c53ea0866169535",
+  "prompts": {
+    "c900495a3834a400": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1ae9c86e-04c3-4c70-8e6a-572602727bf5",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 17,
+      "total_deletions": 0,
+      "accepted_lines": 17,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/8e9d857a908061098ffc100d00cb4d212b9188ee9b64314a28f46e43b2e500a1"
+    }
+  }
+}
