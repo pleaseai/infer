@@ -125,7 +125,7 @@ The system MUST expose an `infer start [--port <port>] [--config <path>]` comman
 
 #### Scenario: CLI startup
 
-- GIVEN the `infer-please` binary is installed
+- GIVEN the `infer` binary is installed
 - WHEN the operator runs `infer start --port 3141`
 - THEN the server begins listening on port 3141 with endpoints ready to serve
 
