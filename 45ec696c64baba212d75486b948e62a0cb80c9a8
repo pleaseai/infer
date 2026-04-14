@@ -1,0 +1,26 @@
+.github/workflows/ci.yml
+  c900495a3834a400 1-75
+.github/dependabot.yml
+  c900495a3834a400 1-46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "45ec696c64baba212d75486b948e62a0cb80c9a8",
+  "prompts": {
+    "c900495a3834a400": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "1ae9c86e-04c3-4c70-8e6a-572602727bf5",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 121,
+      "total_deletions": 0,
+      "accepted_lines": 121,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/32f5f096b46414b52f2438772382d3f8a5a51174fc2759b5e869ffa831e760b5"
+    }
+  }
+}
