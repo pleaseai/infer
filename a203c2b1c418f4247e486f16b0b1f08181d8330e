@@ -1,0 +1,36 @@
+packages/tei/src/runtime/runtime-selector.ts
+  1f5540e98138a50f 21-31,40-47,77,97,112,121,125,144-147
+packages/tei/src/runtime/docker-spawn.ts
+  1f5540e98138a50f 78-83
+packages/server/src/config.ts
+  1f5540e98138a50f 32-37,40-41
+packages/server/src/config.test.ts
+  1f5540e98138a50f 113-142
+packages/tei/src/runtime/runtime-selector.test.ts
+  1f5540e98138a50f 158-209
+packages/tei/src/runtime/image-resolver.test.ts
+  1f5540e98138a50f 112-131
+packages/tei/src/runtime/docker-spawn.test.ts
+  1f5540e98138a50f 1,3,81-86,109-158
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "a203c2b1c418f4247e486f16b0b1f08181d8330e",
+  "prompts": {
+    "1f5540e98138a50f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c4ca8cec-57f0-497b-a267-9cd7276598c1",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 211,
+      "total_deletions": 19,
+      "accepted_lines": 203,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/acd5ee318f114a97f57950989e5357021db6baa967213931688c7e9b52d3dbe3"
+    }
+  }
+}
