@@ -63,8 +63,12 @@ describe.skipIf(E2E_SKIP_REASON !== null)('e2e: TEI process lifecycle', () => {
     expect(procsAfterRespawn).toHaveLength(1)
     expect(procsAfterRespawn[0]!.state).toBe('ready')
 
-    // firstPort may or may not equal respawned port — assert both are in range.
-    expect(firstPort).toBeGreaterThanOrEqual(19080)
-    expect(firstPort).toBeLessThanOrEqual(19099)
+    // Both allocations must come from the configured port range. The respawned
+    // port may reuse firstPort (PortPool released it) or may be different.
+    const respawnedPort = procsAfterRespawn[0]!.port
+    for (const port of [firstPort, respawnedPort]) {
+      expect(port).toBeGreaterThanOrEqual(19080)
+      expect(port).toBeLessThanOrEqual(19099)
+    }
   }, 300_000)
 })

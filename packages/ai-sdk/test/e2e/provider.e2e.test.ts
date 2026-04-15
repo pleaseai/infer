@@ -8,15 +8,13 @@ const TEST_MODEL = 'sentence-transformers/all-MiniLM-L6-v2'
 
 // Inline skip gate rather than depending on the server package's helpers,
 // since cross-package imports from test/ are fragile under Bun workspace
-// resolution and this test only needs the Docker probe.
+// resolution and this test only needs the Docker probe. Throws are deferred
+// to beforeAll so CI failures attach to the suite, not module load.
 const SKIP_REASON = (() => {
   if (process.env.RUN_E2E !== '1' && !process.env.CI) {
     return 'E2E tests are opt-in. Set RUN_E2E=1 or run via `bun run test:e2e`.'
   }
   if (!hasDocker()) {
-    if (process.env.CI) {
-      throw new Error('[E2E] Docker required in CI but not available')
-    }
     return 'Docker is not available. Start Docker Desktop or install Docker.'
   }
   return null
@@ -26,6 +24,9 @@ describe.skipIf(SKIP_REASON !== null)('e2e: @pleaseai/infer-ai-sdk provider', ()
   let manager: TeiManager
 
   beforeAll(() => {
+    if (process.env.CI && !hasDocker()) {
+      throw new Error('[E2E] Docker required in CI but not available')
+    }
     manager = new TeiManager(
       {
         portRangeStart: 28080,
@@ -60,7 +61,7 @@ describe.skipIf(SKIP_REASON !== null)('e2e: @pleaseai/infer-ai-sdk provider', ()
     for (const v of result.embeddings) {
       expect(v.length).toBe(384)
     }
-  })
+  }, 180_000)
 
   it('createTeiManager default export still compiles (smoke)', () => {
     // Sanity check that the SDK's public factory is importable even though

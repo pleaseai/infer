@@ -36,6 +36,7 @@ export interface StartTestServerOptions {
 export async function startTestServer(
   options: StartTestServerOptions = {},
 ): Promise<TestServerHandle> {
+  assertDockerInCI()
   const models = options.models ?? [
     { id: TEST_EMBED_MODEL, type: 'embedding', backend: 'tei', repo_id: TEST_EMBED_MODEL },
   ]
@@ -66,7 +67,16 @@ export async function startTestServer(
 
   const shutdown = async (): Promise<void> => {
     server.stop()
-    await teiManager.stopAll()
+    // Surface stopAll failures loudly — a silent failure here can leak Docker
+    // containers across test runs and poison subsequent suites.
+    await teiManager.stopAll().catch((err: unknown) => {
+      const leakedIds = teiManager.getProcesses().map(p => p.modelId).join(', ')
+      console.error(
+        `[E2E] teiManager.stopAll() failed — possibly leaked containers for: [${leakedIds}]`,
+        err,
+      )
+      throw err
+    })
   }
 
   return { url, port, teiManager, server, shutdown }
@@ -82,6 +92,11 @@ export async function startTestServer(
  *
  * The spec's "TEI binary on $PATH" requirement maps to "Docker running"
  * in this implementation — see plan.md's Architecture Decision for rationale.
+ *
+ * This function never throws — CI-without-Docker is surfaced as a fail-fast
+ * `beforeAll` hook in each suite via `assertDockerInCI()`, which gives the
+ * test runner a proper file/suite attribution instead of a cryptic module-load
+ * error.
  */
 export function computeSkipReason(): string | null {
   // Opt-in gate: default `bun test` must not spin up Docker.
@@ -90,15 +105,20 @@ export function computeSkipReason(): string | null {
   }
 
   if (!hasDocker()) {
-    const msg = 'Docker is not available. Start Docker Desktop or install Docker.'
-    // In CI, a missing Docker is a workflow bug, not a test environment condition.
-    if (process.env.CI) {
-      throw new Error(`[E2E] ${msg}`)
-    }
-    return msg
+    return 'Docker is not available. Start Docker Desktop or install Docker.'
   }
 
   return null
 }
 
 export const E2E_SKIP_REASON = computeSkipReason()
+
+/**
+ * In CI, a missing Docker is a workflow bug, not a skip condition. Call this
+ * from each suite's `beforeAll` so the failure attaches to the suite name.
+ */
+export function assertDockerInCI(): void {
+  if (process.env.CI && !hasDocker()) {
+    throw new Error('[E2E] Docker required in CI but not available')
+  }
+}

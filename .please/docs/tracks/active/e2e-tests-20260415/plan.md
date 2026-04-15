@@ -125,3 +125,8 @@ T002, T003 ────────────────────┬─→
 - `TeiManager`'s existing dependency injection (`spawnFn`, `findBinary`) turned out to be exactly the right seam for Docker substitution — no production code changes were needed to support E2E, which is a nice validation of the injection design.
 - Bun test lacks an `--ignore` flag; scoping default `test` to `bun test src/` was the cleanest way to keep E2E opt-in without a separate config file.
 - `@pleaseai/infer-ai-sdk`'s `createInferPlease` doesn't accept a preconfigured TeiManager, so the ai-sdk E2E test constructs `InferPleaseEmbeddingModel` directly. A future improvement could expose an optional `manager` parameter to make the public API as injectable as the underlying `TeiManager`.
+
+### Deferred (reviewed but out of scope for this track)
+
+- **`stopping`-state race coverage**: the lifecycle suite confirms idle-timeout + respawn, but does not drive a request mid-`stopping`. Exercising that path requires deterministic timing control that real Docker cannot reliably provide — better suited to a unit-level test against a mocked spawnFn that intentionally stalls `kill()`.
+- **Auth E2E**: `startTestServer` supports an `authToken` option but no suite sets one. The `src/middleware/auth.test.ts` + `integration.test.ts` already cover middleware behavior; adding real-HTTP auth coverage has marginal value and is cheap to add later when a regression motivates it.
