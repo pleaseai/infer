@@ -1,0 +1,26 @@
+.please/docs/tracks/active/e2e-tests-20260415/plan.md
+  30a7e1d8fe3d48b8 102
+packages/server/test/e2e/helpers.ts
+  30a7e1d8fe3d48b8 82-84
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "2a9966b3ec93f43135ad061f16f16d9291faf669",
+  "prompts": {
+    "30a7e1d8fe3d48b8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3e2c3c03-f200-41ad-a58a-dc987b8251bb",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 4,
+      "total_deletions": 1,
+      "accepted_lines": 4,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/707fe70e0d28d16a0af0e5a8a0a3067f3a7bb18c70a9d4e183423468d9835b27"
+    }
+  }
+}
