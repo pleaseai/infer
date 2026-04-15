@@ -63,8 +63,8 @@ infer.yaml (tei.runtime, tei.image, tei.imageTag)
 
 ## Tasks
 
-- [ ] T001 [P] config 스키마에 tei 섹션 추가 (file: packages/server/src/config.ts) — `teiSchema`(runtime: `'native'|'docker'|'auto'` default `auto`, image, imageTag default `'1.9'`), `parseConfig` 확장. 검증: 기존 테스트 전 통과 + tei 섹션 없는 yaml → `runtime:'auto'` 기본값
-- [ ] T002 [P] config.ts tei 섹션 단위 테스트 (file: packages/server/src/config.test.ts) — runtime enum 유효/무효, 기본값, image/imageTag override, 기존 테스트 regression 확인. 커버리지 >80% (depends on T001)
+- [x] T001 [P] config 스키마에 tei 섹션 추가 (file: packages/server/src/config.ts) — `teiSchema`(runtime: `'native'|'docker'|'auto'` default `auto`, image, imageTag default `'1.9'`), `parseConfig` 확장. 검증: 기존 테스트 전 통과 + tei 섹션 없는 yaml → `runtime:'auto'` 기본값
+- [x] T002 [P] config.ts tei 섹션 단위 테스트 (file: packages/server/src/config.test.ts) — runtime enum 유효/무효, 기본값, image/imageTag override, 기존 테스트 regression 확인. 커버리지 >80% (depends on T001)
 - [ ] T003 [P] gpu-detect 모듈 (file: packages/tei/src/runtime/gpu-detect.ts) — `detectGpu(execFn): { computeCap: string, count: number } | null`, 5초 타임아웃, nvidia-smi 결과 파싱, 실패 시 null
 - [ ] T004 [P] gpu-detect 단위 테스트 (file: packages/tei/src/runtime/gpu-detect.test.ts) — execFn 모킹: (a) nvidia-smi 없음 → null, (b) "8.9" 출력 → {computeCap:'8.9'}, (c) 복수 GPU → 첫 번째 사용, (d) 타임아웃 → null, (e) 에러 출력 → null (depends on T003)
 - [ ] T005 [P] image-resolver 모듈 (file: packages/tei/src/runtime/image-resolver.ts) — `resolveTeiImage({gpu, arch, imageTag, override}): { ref: string, isExperimental: boolean, reason: string }`. compute cap → variant 전 매핑, override 우선, arch fallback (`darwin-arm64`/`linux-arm64` → cpu-arm64, x86_64 → cpu). 순수 함수
@@ -137,7 +137,7 @@ Parallel clusters:
 
 ## Progress
 
-<!-- 구현 진행 시 /please:implement가 갱신 -->
+- 2026-04-15: T001, T002 — config.ts에 tei 섹션 스키마 (runtime enum, image, imageTag default 1.9) 추가 및 9개 단위 테스트 통과 (21/21 green)
 
 ## Decision Log
 

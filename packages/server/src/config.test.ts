@@ -59,6 +59,58 @@ describe('configSchema', () => {
     })
     expect(result.success).toBe(false)
   })
+
+  describe('tei section', () => {
+    it('applies defaults when tei section is absent', () => {
+      const cfg = configSchema.parse({ models: [] })
+      expect(cfg.tei.runtime).toBe('auto')
+      expect(cfg.tei.imageTag).toBe('1.9')
+      expect(cfg.tei.image).toBeUndefined()
+    })
+
+    it('accepts runtime: native', () => {
+      const cfg = configSchema.parse({ tei: { runtime: 'native' }, models: [] })
+      expect(cfg.tei.runtime).toBe('native')
+    })
+
+    it('accepts runtime: docker', () => {
+      const cfg = configSchema.parse({ tei: { runtime: 'docker' }, models: [] })
+      expect(cfg.tei.runtime).toBe('docker')
+    })
+
+    it('accepts runtime: auto', () => {
+      const cfg = configSchema.parse({ tei: { runtime: 'auto' }, models: [] })
+      expect(cfg.tei.runtime).toBe('auto')
+    })
+
+    it('rejects unknown runtime values', () => {
+      const result = configSchema.safeParse({ tei: { runtime: 'wasm' }, models: [] })
+      expect(result.success).toBe(false)
+    })
+
+    it('accepts tei.image full reference override', () => {
+      const cfg = configSchema.parse({
+        tei: { image: 'ghcr.io/huggingface/text-embeddings-inference@sha256:abc' },
+        models: [],
+      })
+      expect(cfg.tei.image).toBe('ghcr.io/huggingface/text-embeddings-inference@sha256:abc')
+    })
+
+    it('accepts tei.imageTag override', () => {
+      const cfg = configSchema.parse({ tei: { imageTag: '1.8' }, models: [] })
+      expect(cfg.tei.imageTag).toBe('1.8')
+    })
+
+    it('rejects empty tei.image string', () => {
+      const result = configSchema.safeParse({ tei: { image: '' }, models: [] })
+      expect(result.success).toBe(false)
+    })
+
+    it('rejects empty tei.imageTag string', () => {
+      const result = configSchema.safeParse({ tei: { imageTag: '' }, models: [] })
+      expect(result.success).toBe(false)
+    })
+  })
 })
 
 describe('parseConfig', () => {

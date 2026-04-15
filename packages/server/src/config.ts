@@ -26,9 +26,21 @@ export const authSchema = z.object({
   token: z.string().min(1),
 }).optional()
 
+export const teiRuntimeSchema = z.enum(['native', 'docker', 'auto'])
+export type TeiRuntime = z.infer<typeof teiRuntimeSchema>
+
+export const teiSchema = z.object({
+  runtime: teiRuntimeSchema.default('auto'),
+  image: z.string().min(1).optional(),
+  imageTag: z.string().min(1).default('1.9'),
+}).default({ runtime: 'auto', imageTag: '1.9' })
+
+export type TeiConfig = z.infer<typeof teiSchema>
+
 export const configSchema = z.object({
   server: serverSchema,
   auth: authSchema,
+  tei: teiSchema,
   models: z.array(modelEntrySchema).superRefine((models, ctx) => {
     const seen = new Set<string>()
     for (const m of models) {
