@@ -110,6 +110,36 @@ describe('configSchema', () => {
       const result = configSchema.safeParse({ tei: { imageTag: '' }, models: [] })
       expect(result.success).toBe(false)
     })
+
+    it('rejects tei.imageTag with newline injection', () => {
+      const result = configSchema.safeParse({
+        tei: { imageTag: '1.9\nghcr.io/attacker/malicious:latest' },
+        models: [],
+      })
+      expect(result.success).toBe(false)
+    })
+
+    it('rejects tei.image with newline or shell metacharacters', () => {
+      for (const bad of ['img\nmalicious', 'img;rm -rf /', 'img$(whoami)', 'img with space']) {
+        const result = configSchema.safeParse({ tei: { image: bad }, models: [] })
+        expect(result.success, `"${bad}" should be rejected`).toBe(false)
+      }
+    })
+
+    it('accepts typical image references and tags', () => {
+      for (const good of [
+        'ghcr.io/huggingface/text-embeddings-inference:89-1.9',
+        'ghcr.io/huggingface/text-embeddings-inference@sha256:abc123',
+        'docker.io/library/alpine:latest',
+      ]) {
+        const result = configSchema.safeParse({ tei: { image: good }, models: [] })
+        expect(result.success, `"${good}" should be accepted`).toBe(true)
+      }
+      for (const tag of ['1.9', '1.9-cpu', '89-1.9', 'latest', 'v2.0.0']) {
+        const result = configSchema.safeParse({ tei: { imageTag: tag }, models: [] })
+        expect(result.success, `tag "${tag}" should be accepted`).toBe(true)
+      }
+    })
   })
 })
 

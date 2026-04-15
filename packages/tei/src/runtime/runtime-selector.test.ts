@@ -155,4 +155,56 @@ describe('selectRuntime', () => {
       expect(result.findBinary()).toBe('docker')
     })
   })
+
+  describe('dockerSpawnFactory wiring (useGpu + hfCacheHost plumbing)', () => {
+    it('passes useGpu=true to the factory when GPU is detected (no override)', () => {
+      const factory = mock(() => () => ({ kill: () => {}, exited: Promise.resolve(0) }))
+      selectRuntime(baseInput({
+        arch: 'linux-x64',
+        dockerInfoFn: mock(() => true),
+        gpuDetectFn: mock(() => ({ computeCap: '8.9', count: 1 })),
+        dockerSpawnFactory: factory,
+      }))
+      expect(factory).toHaveBeenCalledTimes(1)
+      const [image, useGpu] = factory.mock.calls[0] as unknown as [string, boolean, string]
+      expect(image).toBe(`${REPO}:89-1.9`)
+      expect(useGpu).toBe(true)
+    })
+
+    it('passes useGpu=false when no GPU is detected', () => {
+      const factory = mock(() => () => ({ kill: () => {}, exited: Promise.resolve(0) }))
+      selectRuntime(baseInput({
+        arch: 'linux-x64',
+        dockerInfoFn: mock(() => true),
+        gpuDetectFn: mock(() => null),
+        dockerSpawnFactory: factory,
+      }))
+      const [, useGpu] = factory.mock.calls[0] as unknown as [string, boolean, string]
+      expect(useGpu).toBe(false)
+    })
+
+    it('passes useGpu=false when image override is set (GPU ignored)', () => {
+      const factory = mock(() => () => ({ kill: () => {}, exited: Promise.resolve(0) }))
+      selectRuntime(baseInput({
+        config: { runtime: 'docker', imageTag: '1.9', image: `${REPO}:custom` },
+        arch: 'linux-x64',
+        dockerInfoFn: mock(() => true),
+        gpuDetectFn: mock(() => ({ computeCap: '8.9', count: 1 })),
+        dockerSpawnFactory: factory,
+      }))
+      const [, useGpu] = factory.mock.calls[0] as unknown as [string, boolean, string]
+      expect(useGpu).toBe(false)
+    })
+
+    it('threads hfCacheHost through to the factory', () => {
+      const factory = mock(() => () => ({ kill: () => {}, exited: Promise.resolve(0) }))
+      selectRuntime(baseInput({
+        hfCacheHost: '/tmp/e2e-hf-cache',
+        dockerInfoFn: mock(() => true),
+        dockerSpawnFactory: factory,
+      }))
+      const [, , hfCacheHost] = factory.mock.calls[0] as unknown as [string, boolean, string]
+      expect(hfCacheHost).toBe('/tmp/e2e-hf-cache')
+    })
+  })
 })

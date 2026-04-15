@@ -1,4 +1,6 @@
+import type { Buffer as NodeBuffer } from 'node:buffer'
 import type { DockerSpawnDeps } from './docker-spawn'
+import { Buffer } from 'node:buffer'
 import { describe, expect, it, mock } from 'bun:test'
 import { createDockerSpawn, hasDocker } from './docker-spawn'
 
@@ -76,6 +78,12 @@ describe('createDockerSpawn', () => {
     expect(() => spawn(['/unused', '--port', '18080'])).toThrow(/--model-id/)
   })
 
+  it('throws when hfCacheHost contains colon (docker -v syntax safety)', () => {
+    const deps = buildDeps({ hfCacheHost: '/tmp/cache:malicious,ro' })
+    const spawn = createDockerSpawn(deps)
+    expect(() => spawn(['/unused', '--model-id', 'm', '--port', '18080'])).toThrow(/colon|hfCacheHost/i)
+  })
+
   it('kill() calls docker stop with the container id', () => {
     const deps = buildDeps()
     const spawn = createDockerSpawn(deps)
@@ -97,6 +105,56 @@ describe('createDockerSpawn', () => {
     const spawn = createDockerSpawn(buildDeps({ execFileSyncFn: execFn }))
     const proc = spawn(['/unused', '--model-id', 'm', '--port', '18080'])
     expect(() => proc.kill()).not.toThrow()
+  })
+
+  describe('exited promise (lifecycle crash-recovery contract)', () => {
+    function makeWaitSpawn(exitOutput: string) {
+      let closeCb: ((code: number) => void) | null = null
+      let dataCb: ((chunk: NodeBuffer) => void) | null = null
+      const spawnFn = mock(() => ({
+        stdout: {
+          on: mock((event: string, cb: (chunk: NodeBuffer) => void) => {
+            if (event === 'data')
+              dataCb = cb
+          }),
+        } as unknown as NodeJS.ReadableStream,
+        on: mock((event: string, cb: (code: number) => void) => {
+          if (event === 'close')
+            closeCb = cb
+        }),
+      })) as unknown as DockerSpawnDeps['spawnFn']
+      return {
+        spawnFn,
+        drive: (): void => {
+          dataCb?.(Buffer.from(exitOutput))
+          closeCb?.(0)
+        },
+      }
+    }
+
+    it('resolves exited with the numeric exit code parsed from docker wait stdout', async () => {
+      const { spawnFn, drive } = makeWaitSpawn('137\n')
+      const spawn = createDockerSpawn(buildDeps({ spawnFn }))
+      const proc = spawn(['/unused', '--model-id', 'm', '--port', '18080'])
+      drive()
+      expect(await proc.exited).toBe(137)
+    })
+
+    it('resolves exited to 0 when docker wait stdout is not a number', async () => {
+      const { spawnFn, drive } = makeWaitSpawn('not-a-number')
+      const spawn = createDockerSpawn(buildDeps({ spawnFn }))
+      const proc = spawn(['/unused', '--model-id', 'm', '--port', '18080'])
+      drive()
+      expect(await proc.exited).toBe(0)
+    })
+
+    it('resolves exited to 0 when stdout chunk is empty', async () => {
+      const { spawnFn, drive } = makeWaitSpawn('')
+      const spawn = createDockerSpawn(buildDeps({ spawnFn }))
+      const proc = spawn(['/unused', '--model-id', 'm', '--port', '18080'])
+      drive()
+      expect(await proc.exited).toBe(0)
+    })
   })
 })
 

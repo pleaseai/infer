@@ -18,6 +18,17 @@ export interface TeiRuntimeConfig {
   image: string | undefined
 }
 
+/**
+ * Factory that builds the docker-backed `SpawnFn` for a resolved image.
+ * Tests inject a capturing double so they can assert `--gpus all` / mount paths
+ * without spawning real containers.
+ */
+export type DockerSpawnFactory = (
+  image: string,
+  useGpu: boolean,
+  hfCacheHost: string,
+) => (cmd: string[]) => SubprocessLike
+
 /** Inputs for `selectRuntime`. All I/O dependencies are injectable for tests. */
 export interface SelectRuntimeInput {
   config: TeiRuntimeConfig
@@ -26,6 +37,14 @@ export interface SelectRuntimeInput {
   gpuDetectFn: () => GpuInfo | null
   findBinaryFn: () => string
   hfCacheHost: string
+  dockerSpawnFactory?: DockerSpawnFactory
+}
+
+/** Production default: wrap `createDockerSpawn(defaultDockerSpawnDeps)` with the provided cache host. */
+export const defaultDockerSpawnFactory: DockerSpawnFactory = (image, useGpu, hfCacheHost) => {
+  const deps = defaultDockerSpawnDeps(image, useGpu)
+  deps.hfCacheHost = hfCacheHost
+  return createDockerSpawn(deps)
 }
 
 /**
@@ -55,6 +74,7 @@ const bunSpawn: RuntimeResolution['spawnFn'] = (cmd, opts) =>
  */
 export function selectRuntime(input: SelectRuntimeInput): RuntimeResolution {
   const { config, arch, dockerInfoFn, gpuDetectFn, findBinaryFn, hfCacheHost } = input
+  const dockerSpawnFactory = input.dockerSpawnFactory ?? defaultDockerSpawnFactory
   const logLines: string[] = []
 
   if (config.runtime === 'native') {
@@ -74,7 +94,7 @@ export function selectRuntime(input: SelectRuntimeInput): RuntimeResolution {
         'Docker not available — install Docker Desktop or set `tei.runtime: native`',
       )
     }
-    return buildDockerResolution({ config, arch, gpuDetectFn, hfCacheHost, logLines })
+    return buildDockerResolution({ config, arch, gpuDetectFn, hfCacheHost, logLines, dockerSpawnFactory })
   }
 
   // runtime: auto
@@ -89,7 +109,7 @@ export function selectRuntime(input: SelectRuntimeInput): RuntimeResolution {
     }
   }
 
-  return buildDockerResolution({ config, arch, gpuDetectFn, hfCacheHost, logLines })
+  return buildDockerResolution({ config, arch, gpuDetectFn, hfCacheHost, logLines, dockerSpawnFactory })
 }
 
 interface DockerResolutionArgs {
@@ -98,10 +118,11 @@ interface DockerResolutionArgs {
   gpuDetectFn: () => GpuInfo | null
   hfCacheHost: string
   logLines: string[]
+  dockerSpawnFactory: DockerSpawnFactory
 }
 
 function buildDockerResolution(args: DockerResolutionArgs): RuntimeResolution {
-  const { config, arch, gpuDetectFn, hfCacheHost, logLines } = args
+  const { config, arch, gpuDetectFn, hfCacheHost, logLines, dockerSpawnFactory } = args
 
   // With an override, skip GPU detection entirely — the user has dictated the image.
   const gpu = config.image ? null : gpuDetectFn()
@@ -120,11 +141,10 @@ function buildDockerResolution(args: DockerResolutionArgs): RuntimeResolution {
     )
   }
 
-  const useGpu = gpu !== null && !config.image
-  const deps = defaultDockerSpawnDeps(resolved.ref, useGpu)
-  // Override hfCacheHost if the caller supplied a non-default one (e.g. tests).
-  deps.hfCacheHost = hfCacheHost
-  const dockerSpawn = createDockerSpawn(deps)
+  // `gpu` is already forced null when `config.image` is set (line above),
+  // so a single predicate captures the invariant.
+  const useGpu = gpu !== null
+  const dockerSpawn = dockerSpawnFactory(resolved.ref, useGpu, hfCacheHost)
 
   return {
     mode: 'docker',

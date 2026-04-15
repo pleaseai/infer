@@ -109,6 +109,26 @@ describe('resolveTeiImage', () => {
       })
       expect(result.ref).toBe(`${REPO}:cpu-arm64-1.9`)
     })
+
+    it('unknown arch (e.g. windows) + no GPU → cpu-1.9 (x64 fallback)', () => {
+      const result = resolveTeiImage({
+        gpu: null,
+        arch: 'unknown',
+        imageTag: '1.9',
+        override: undefined,
+      })
+      expect(result.ref).toBe(`${REPO}:cpu-1.9`)
+    })
+
+    it('darwin-x64 (Intel Mac) + no GPU → cpu-1.9', () => {
+      const result = resolveTeiImage({
+        gpu: null,
+        arch: 'darwin-x64',
+        imageTag: '1.9',
+        override: undefined,
+      })
+      expect(result.ref).toBe(`${REPO}:cpu-1.9`)
+    })
   })
 
   describe('imageTag override', () => {

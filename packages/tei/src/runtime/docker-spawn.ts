@@ -75,6 +75,12 @@ export function createDockerSpawn(deps: DockerSpawnDeps): (cmd: string[]) => Sub
     const hostPort = cmd[portIdx + 1]!
     const modelId = cmd[modelIdx + 1]!
 
+    // Docker -v takes `host:container[:mode]` — a colon in hfCacheHost would
+    // corrupt the mount syntax. Refuse outright rather than silently mount
+    // the wrong directory.
+    if (hfCacheHost.includes(':'))
+      throw new Error(`hfCacheHost must not contain ':' (got: ${hfCacheHost})`)
+
     const dockerArgs: string[] = ['run', '-d', '--rm']
     if (useGpu)
       dockerArgs.push('--gpus', 'all')
