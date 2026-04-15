@@ -104,7 +104,10 @@ export function computeSkipReason(): string | null {
     return 'E2E tests are opt-in. Set RUN_E2E=1 or run via `bun run test:e2e`.'
   }
 
-  if (!hasDocker()) {
+  // Locally, a missing Docker is a skip condition. In CI, let the suite run
+  // and fail in `beforeAll` via `assertDockerInCI()` so the error attaches
+  // to the suite and CI hard-fails instead of silently passing.
+  if (!hasDocker() && !process.env.CI) {
     return 'Docker is not available. Start Docker Desktop or install Docker.'
   }
 

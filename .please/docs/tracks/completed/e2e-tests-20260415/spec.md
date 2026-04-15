@@ -25,10 +25,10 @@ Add an end-to-end test suite that exercises infer-please through its public inte
 
 - **Framework**: Bun test runner (existing stack; no new dependencies)
 - **Location**: `packages/server/test/e2e/` and `packages/ai-sdk/test/e2e/` — separated from unit/integration tests
-- **Binary requirement**: Tests require `text-embeddings-router` on `$PATH`. Tests skip with a clear message if the binary is missing (developer-friendly), but CI must have it installed.
+- **Runtime requirement**: Tests require Docker (used as the TEI runtime via the Docker spawn adapter injected into `TeiManager`). Locally, tests skip with a clear message when Docker is unavailable; CI must provide Docker and hard-fails if it is missing. See plan.md's Architecture Decision for the rationale behind the Docker-over-binary pivot.
 - **Test model**: Use a single small embedding model (e.g., `sentence-transformers/all-MiniLM-L6-v2` or similar) pinned as a test constant for determinism and reasonable cold-start time
 - **Server lifecycle**: Each test suite starts the server on an ephemeral port via `buildApp()` + `Bun.serve()`, tears it down in `afterAll`
-- **Isolation**: Each suite uses its own port range and its own model, so suites can run in parallel without cross-talk
+- **Isolation**: Suites use transient ports and a pinned test model. Execution is sequential within the E2E suite for stability and to avoid Docker-resource cross-talk; distinct `portRangeStart`/`portRangeEnd` are still provisioned per suite so a future switch to parallel execution does not require helper changes.
 
 ## Success Criteria
 

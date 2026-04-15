@@ -5,14 +5,15 @@ import { join } from 'node:path'
 import process from 'node:process'
 
 /**
- * The TEI Docker image used for E2E tests. Kept on the floating `cpu-latest`
- * tag intentionally so tests pick up upstream TEI fixes without a code change;
- * the tradeoff is that a breaking upstream change surfaces first in CI.
+ * The TEI Docker image used for E2E tests. Pinned by digest for reproducibility —
+ * upstream retag of `cpu-latest` will not silently change what tests run against.
  *
  * When updating this, also update the pre-pull step in .github/workflows/ci.yml
- * so the image name in logs matches what tests actually run.
+ * so the image reference stays in sync.
+ *
+ * Current digest corresponds to `cpu-latest` as of 2026-04-15.
  */
-export const TEI_IMAGE = 'ghcr.io/huggingface/text-embeddings-inference:cpu-latest'
+export const TEI_IMAGE = 'ghcr.io/huggingface/text-embeddings-inference@sha256:162567c08ca7d31e9333801fc8148802d5f337cab57a3d9cd0116c241cac1edf'
 
 const HF_CACHE_HOST = process.env.HF_HOME ?? join(homedir(), '.cache', 'huggingface')
 

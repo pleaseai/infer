@@ -14,7 +14,9 @@ const SKIP_REASON = (() => {
   if (process.env.RUN_E2E !== '1' && !process.env.CI) {
     return 'E2E tests are opt-in. Set RUN_E2E=1 or run via `bun run test:e2e`.'
   }
-  if (!hasDocker()) {
+  // Locally, skip when Docker is missing. In CI, fall through to beforeAll
+  // so the missing-Docker check hard-fails with proper suite attribution.
+  if (!hasDocker() && !process.env.CI) {
     return 'Docker is not available. Start Docker Desktop or install Docker.'
   }
   return null

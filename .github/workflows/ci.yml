@@ -115,7 +115,9 @@ jobs:
           path: ${{ env.HF_HOME }}
           key: hf-models-${{ runner.os }}-minilm-l6-v2-bge-reranker-base
       - name: Pull TEI Docker image
-        run: docker pull ghcr.io/huggingface/text-embeddings-inference:cpu-latest
+        # Pinned by digest for reproducibility. Keep in sync with TEI_IMAGE
+        # in packages/server/test/e2e/docker-spawn.ts.
+        run: docker pull ghcr.io/huggingface/text-embeddings-inference@sha256:162567c08ca7d31e9333801fc8148802d5f337cab57a3d9cd0116c241cac1edf
       - name: Run E2E test suite
         run: bun run test:e2e
         env:
