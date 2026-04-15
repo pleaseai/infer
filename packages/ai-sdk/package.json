@@ -25,6 +25,6 @@
     "ai": "^4",
     "bun-types": "latest",
     "eslint": "^9",
-    "typescript": "^5"
+    "typescript": "^6"
   }
 }
