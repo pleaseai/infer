@@ -1,8 +1,9 @@
 #!/usr/bin/env bun
 import process from 'node:process'
-import { createTeiManager } from '@pleaseai/infer-tei'
+import { createTeiManager, defaultHfCacheHost, defaultSelectRuntimeInput, selectRuntime } from '@pleaseai/infer-tei'
 import { buildApp, createTeiBackend } from './app'
 import { HELP_TEXT, parseCliArgs, resolveConfig } from './cli'
+import { formatStartupBanner, resolveArch, teiRuntimeConfigOf } from './startup'
 
 async function main(argv: string[]): Promise<void> {
   let args
@@ -20,7 +21,11 @@ async function main(argv: string[]): Promise<void> {
   }
 
   const config = resolveConfig(args)
-  const teiManager = createTeiManager()
+  const arch = resolveArch(process.platform, process.arch)
+  const runtime = selectRuntime(
+    defaultSelectRuntimeInput(teiRuntimeConfigOf(config), arch, defaultHfCacheHost()),
+  )
+  const teiManager = createTeiManager(undefined, runtime)
   const backends = { tei: createTeiBackend(teiManager) }
   const app = buildApp({ config, backends })
 
@@ -31,9 +36,13 @@ async function main(argv: string[]): Promise<void> {
   })
 
   process.stdout.write(
-    `infer listening on http://${server.hostname}:${server.port}\n`
-    + `  models: ${config.models.length} registered\n`
-    + `  auth:   ${config.auth?.token ? 'on' : 'off'}\n`,
+    formatStartupBanner({
+      host: server.hostname ?? config.server.host,
+      port: server.port ?? config.server.port,
+      modelCount: config.models.length,
+      authEnabled: Boolean(config.auth?.token),
+      runtimeLogLines: runtime.logLines,
+    }),
   )
 
   const shutdown = () => {

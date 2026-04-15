@@ -104,24 +104,24 @@ describe('createDockerSpawn', () => {
 describe('hasDocker', () => {
   it('returns true when docker info succeeds', () => {
     const execFn = mock(() => 'Server version: 24.0.0')
-    expect(hasDocker(execFn)).toBe(true)
-    const [cmd, args, opts] = execFn.mock.calls[0]!
-    expect(cmd).toBe('docker')
-    expect(args).toContain('info')
-    expect((opts as { timeout?: number }).timeout).toBe(5000)
+    expect(hasDocker(execFn as unknown as DockerSpawnDeps['execFileSyncFn'])).toBe(true)
+    const callArgs = execFn.mock.calls[0] as unknown as [string, string[], { timeout?: number }]
+    expect(callArgs[0]).toBe('docker')
+    expect(callArgs[1]).toContain('info')
+    expect(callArgs[2].timeout).toBe(5000)
   })
 
   it('returns false when docker info throws', () => {
     const execFn = mock(() => {
       throw new Error('command not found: docker')
     })
-    expect(hasDocker(execFn)).toBe(false)
+    expect(hasDocker(execFn as unknown as DockerSpawnDeps['execFileSyncFn'])).toBe(false)
   })
 
   it('returns false when docker info times out', () => {
     const execFn = mock(() => {
       throw new Error('ETIMEDOUT')
     })
-    expect(hasDocker(execFn)).toBe(false)
+    expect(hasDocker(execFn as unknown as DockerSpawnDeps['execFileSyncFn'])).toBe(false)
   })
 })
