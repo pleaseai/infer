@@ -1,0 +1,28 @@
+.please/docs/tracks.jsonl
+  30a7e1d8fe3d48b8 3
+.please/docs/tracks/tech-debt-tracker.md
+  30a7e1d8fe3d48b8 9-10
+.please/docs/tracks/completed/e2e-tests-20260415/metadata.json
+  30a7e1d8fe3d48b8 4,6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "1860ffa644f44695d82891b458e50bece96605b4",
+  "prompts": {
+    "30a7e1d8fe3d48b8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3e2c3c03-f200-41ad-a58a-dc987b8251bb",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 31,
+      "total_deletions": 3,
+      "accepted_lines": 5,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/1317e6c0392802db393fc0d9cdafa76da2460d6fd7cd28ddc15fb5a292fac3bf"
+    }
+  }
+}
