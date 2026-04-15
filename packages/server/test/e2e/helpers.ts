@@ -79,6 +79,9 @@ export async function startTestServer(
  * when they should be skipped. Tests use:
  *
  *   describe.skipIf(E2E_SKIP_REASON !== null)('...', () => { ... })
+ *
+ * The spec's "TEI binary on $PATH" requirement maps to "Docker running"
+ * in this implementation — see plan.md's Architecture Decision for rationale.
  */
 export function computeSkipReason(): string | null {
   // Opt-in gate: default `bun test` must not spin up Docker.
