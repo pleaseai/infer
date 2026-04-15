@@ -31,7 +31,7 @@
     "ai": "^4",
     "bun-types": "latest",
     "eslint": "^9",
-    "openai": "^4",
+    "openai": "^6",
     "typescript": "^6"
   }
 }
