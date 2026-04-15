@@ -1,7 +1,8 @@
 import type {
   PortRange,
+  RuntimeResolution,
 } from './index'
-import { describe, expect, it } from 'bun:test'
+import { describe, expect, it, mock } from 'bun:test'
 import {
   createTeiManager,
   findTeiBinary,
@@ -46,6 +47,59 @@ describe('createTeiManager', () => {
   it('returns a TeiManager instance with partial options', () => {
     const manager = createTeiManager({ idleTimeoutMs: 60_000 })
     expect(manager).toBeInstanceOf(TeiManager)
+  })
+
+  it('accepts runtime resolution in docker mode', () => {
+    const runtime: RuntimeResolution = {
+      mode: 'docker',
+      spawnFn: mock(() => ({ kill: () => {}, exited: Promise.resolve(0) })),
+      findBinary: () => 'docker',
+      imageRef: 'ghcr.io/huggingface/text-embeddings-inference:cpu-1.9',
+      logLines: [],
+    }
+    const manager = createTeiManager({}, runtime)
+    expect(manager).toBeInstanceOf(TeiManager)
+    expect(manager.getProcesses()).toEqual([])
+  })
+
+  it('accepts runtime resolution in native mode', () => {
+    const runtime: RuntimeResolution = {
+      mode: 'native',
+      spawnFn: mock(() => ({ kill: () => {}, exited: Promise.resolve(0) })),
+      findBinary: () => '/usr/local/bin/text-embeddings-router',
+      imageRef: undefined,
+      logLines: [],
+    }
+    const manager = createTeiManager({}, runtime)
+    expect(manager).toBeInstanceOf(TeiManager)
+  })
+
+  it('wires runtime spawnFn so that spawnProcess invokes it', async () => {
+    const spawnFn = mock(() => ({
+      kill: () => {},
+      exited: Promise.resolve(0),
+    }))
+    const runtime: RuntimeResolution = {
+      mode: 'docker',
+      spawnFn,
+      findBinary: () => 'docker',
+      imageRef: 'ghcr.io/huggingface/text-embeddings-inference:cpu-1.9',
+      logLines: [],
+    }
+    const manager = createTeiManager(
+      {
+        portRangeStart: 38080,
+        portRangeEnd: 38081,
+        healthCheckIntervalMs: 10,
+        healthCheckTimeoutMs: 50,
+      },
+      runtime,
+    )
+    try {
+      await manager.ensureRunning('test/model')
+    }
+    catch { /* expected: health check times out since spawnFn is a stub */ }
+    expect(spawnFn.mock.calls.length).toBeGreaterThan(0)
   })
 })
 

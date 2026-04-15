@@ -5,3 +5,4 @@
 | Spec | Domain | Feature | Created | Related Tracks |
 |------|--------|---------|---------|----------------|
 | SPEC-001 | gateway | openai-endpoints | 2026-04-14 | [ai-gateway-endpoints-20260414] |
+| SPEC-002 | runtime | docker | 2026-04-15 | [docker-runtime-gpu-detect-20260415] |

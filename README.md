@@ -195,24 +195,50 @@ infer-please (:3141)
 
 ```yaml
 # infer.yaml (optional)
-port: 3141
+server:
+  port: 3141
+  host: 127.0.0.1
+
+auth:
+  token: secret                    # optional Bearer token
 
 tei:
-  binary: text-embeddings-router  # or docker
-  idleTimeout: 300                # seconds before auto-stop
-  portRange: [8080, 8099]         # internal port pool
-
-llama:
-  binary: llama-server           # llama.cpp server binary
-  gpu: auto                       # auto | none | metal | cuda | vulkan
+  runtime: auto                    # auto | native | docker (default: auto)
+  imageTag: "1.9"                  # TEI docker image tag (default: "1.9")
+  # image: ghcr.io/huggingface/text-embeddings-inference@sha256:...
+  # Full image reference override — takes precedence over runtime auto-detect.
 
 models:
-  # Pre-load on startup (optional)
-  - model: BAAI/bge-small-en-v1.5
-    task: embedding
-  - model: BAAI/bge-reranker-large
-    task: rerank
+  - id: bge-small-en
+    type: embedding                # embedding | rerank | chat
+    backend: tei                   # tei | llama
+    repo_id: BAAI/bge-small-en-v1.5
+  - id: bge-reranker
+    type: rerank
+    backend: tei
+    repo_id: BAAI/bge-reranker-large
 ```
+
+### TEI runtime selection
+
+`tei.runtime` controls how the TEI backend is launched:
+
+| Mode     | Behavior                                                                                                    |
+| -------- | ----------------------------------------------------------------------------------------------------------- |
+| `auto`   | Prefer Docker if available; otherwise fall back to the native `text-embeddings-router` binary on `$PATH`.  |
+| `docker` | Require Docker. Fails fast at startup if Docker is not running.                                            |
+| `native` | Use the native `text-embeddings-router` binary only. Ignore Docker even when available.                    |
+
+In Docker mode, the image variant is chosen automatically from the host's GPU compute capability and CPU architecture:
+
+- NVIDIA compute capability `7.5` → `turing-{tag}` (experimental)
+- `8.0` → `{tag}` (Ampere default), `8.6` → `86-{tag}`, `8.9` → `89-{tag}` (Ada), `9.0` → `hopper-{tag}`
+- `10.0`/`12.0`/`12.1` → Blackwell variants (experimental)
+- No GPU on `darwin-arm64` or `linux-arm64` → `cpu-arm64-{tag}`
+- No GPU on `linux-x86_64` → `cpu-{tag}`
+- Volta (7.0) and unknown caps fall back to the CPU variant with a log line explaining why
+
+Set `tei.image` to pin a specific digest or custom reference — auto-detection is skipped when this is present.
 
 ## Architecture
 
@@ -258,7 +284,7 @@ infer-please/
 - [ ] `@pleaseai/infer-ai-sdk` provider package
 - [ ] CLI (`infer start`, `models`, `pull`)
 - [ ] Pre-load models on startup
-- [ ] Docker mode (TEI as containers instead of binary)
+- [x] Docker mode (TEI as containers instead of binary)
 - [ ] Streaming chat (SSE)
 - [ ] Metrics & health check
 - [ ] Vercel AI Gateway fallback (local-first, cloud-backup)
