@@ -22,7 +22,7 @@
     "@pleaseai/infer-tei": "workspace:*",
     "hono": "^4",
     "yaml": "^2",
-    "zod": "^3"
+    "zod": "^4"
   },
   "devDependencies": {
     "@ai-sdk/openai-compatible": "^0.2",
