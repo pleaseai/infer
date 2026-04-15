@@ -1,0 +1,36 @@
+packages/tei/src/runtime/docker-spawn.test.ts
+  1f5540e98138a50f 107-111,118,125
+.please/docs/tracks/active/docker-runtime-gpu-detect-20260415/metadata.json
+  1f5540e98138a50f 8
+packages/server/src/startup.test.ts
+  1f5540e98138a50f 1-112
+.please/docs/tracks/active/docker-runtime-gpu-detect-20260415/plan.md
+  1f5540e98138a50f 78-79
+packages/server/src/startup.ts
+  1f5540e98138a50f 1-53
+packages/server/src/index.ts
+  1f5540e98138a50f 3,6,24-28,39-45
+packages/tei/src/runtime/gpu-detect.test.ts
+  1f5540e98138a50f 1,5-7,11,18,24,30,35,42,47,50-51,54
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "ff62bc2a06b2e3380d9906fc0db06b50c19fce94",
+  "prompts": {
+    "1f5540e98138a50f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c4ca8cec-57f0-497b-a267-9cd7276598c1",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 207,
+      "total_deletions": 27,
+      "accepted_lines": 204,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/adcc09e9285263a8f26e348ad94ad4ac5fd60f269f4b98ca9b52ecad95050143"
+    }
+  }
+}
