@@ -1,0 +1,32 @@
+.please/docs/tracks/active/e2e-tests-20260415/plan.md
+  30a7e1d8fe3d48b8 128-132
+packages/server/test/e2e/lifecycle.e2e.test.ts
+  30a7e1d8fe3d48b8 66-72
+packages/server/test/e2e/docker-spawn.ts
+  30a7e1d8fe3d48b8 7-14
+packages/server/test/e2e/helpers.ts
+  30a7e1d8fe3d48b8 39,70-79,95-99,108,115-124
+packages/ai-sdk/test/e2e/provider.e2e.test.ts
+  30a7e1d8fe3d48b8 11-12,27-29,64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "6209c28fd1e354972ef0466973610e026e1aaaf5",
+  "prompts": {
+    "30a7e1d8fe3d48b8": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3e2c3c03-f200-41ad-a58a-dc987b8251bb",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 53,
+      "total_deletions": 15,
+      "accepted_lines": 53,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/97611114582ff8fd796cfde3d6806cbf2365eb07ba3bc53a63960ae20d9679c9"
+    }
+  }
+}
