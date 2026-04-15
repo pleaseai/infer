@@ -1,0 +1,32 @@
+packages/tei/src/runtime/image-resolver.test.ts
+  1f5540e98138a50f 1-157
+.please/docs/tracks/active/docker-runtime-gpu-detect-20260415/plan.md
+  1f5540e98138a50f 68-71,141-142
+packages/tei/src/runtime/gpu-detect.test.ts
+  1f5540e98138a50f 1-50
+packages/tei/src/runtime/gpu-detect.ts
+  1f5540e98138a50f 1-57
+packages/tei/src/runtime/image-resolver.ts
+  1f5540e98138a50f 1-92
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "0d3b0bb4af4b5adb73dbbf476c9ba3230684fa58",
+  "prompts": {
+    "1f5540e98138a50f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c4ca8cec-57f0-497b-a267-9cd7276598c1",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 362,
+      "total_deletions": 4,
+      "accepted_lines": 363,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/a7c7d287c9464994a0855dc56e771911974081fdd3ef391bfa665affb45eef50"
+    }
+  }
+}
