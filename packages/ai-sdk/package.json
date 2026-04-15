@@ -24,7 +24,7 @@
     "@pleaseai/eslint-config": "latest",
     "ai": "^4",
     "bun-types": "latest",
-    "eslint": "^9",
+    "eslint": "^10",
     "typescript": "^6"
   }
 }

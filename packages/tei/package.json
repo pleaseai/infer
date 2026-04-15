@@ -16,7 +16,7 @@
   "devDependencies": {
     "@pleaseai/eslint-config": "latest",
     "bun-types": "latest",
-    "eslint": "^9",
+    "eslint": "^10",
     "typescript": "^6"
   }
 }

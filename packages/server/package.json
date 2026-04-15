@@ -30,7 +30,7 @@
     "@pleaseai/infer-ai-sdk": "workspace:*",
     "ai": "^4",
     "bun-types": "latest",
-    "eslint": "^9",
+    "eslint": "^10",
     "openai": "^6",
     "typescript": "^6"
   }
