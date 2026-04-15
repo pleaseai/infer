@@ -1,26 +1,44 @@
-import type { Buffer } from 'node:buffer'
-import { execFileSync, spawn } from 'node:child_process'
-import { homedir } from 'node:os'
-import { join } from 'node:path'
+import type { Arch, SubprocessLike } from '@pleaseai/infer-tei'
 import process from 'node:process'
+import {
+  createDockerSpawn,
+  defaultDockerSpawnDeps,
+  defaultHfCacheHost,
+  dockerFindBinary as prodFindBinary,
+  hasDocker as prodHasDocker,
+  resolveTeiImage,
+} from '@pleaseai/infer-tei'
 
 /**
- * The TEI Docker image used for E2E tests. Pinned by digest for reproducibility —
- * upstream retag of `cpu-latest` will not silently change what tests run against.
- *
- * When updating this, also update the pre-pull step in .github/workflows/ci.yml
- * so the image reference stays in sync.
- *
- * Current digest corresponds to `cpu-latest` as of 2026-04-15.
+ * Resolve the arch string the TEI image resolver expects from current Node env.
+ * Duplicated here (rather than imported from the server package) because the
+ * E2E helpers live under `packages/server` and we want `docker-spawn.ts` to
+ * stay dependency-free from server internals.
  */
-export const TEI_IMAGE = 'ghcr.io/huggingface/text-embeddings-inference@sha256:162567c08ca7d31e9333801fc8148802d5f337cab57a3d9cd0116c241cac1edf'
-
-const HF_CACHE_HOST = process.env.HF_HOME ?? join(homedir(), '.cache', 'huggingface')
-
-interface SubprocessLike {
-  kill: () => void
-  exited: Promise<number>
+function resolveArch(): Arch {
+  if (process.platform === 'darwin')
+    return process.arch === 'arm64' ? 'darwin-arm64' : 'darwin-x64'
+  if (process.platform === 'linux')
+    return process.arch === 'arm64' ? 'linux-arm64' : 'linux-x64'
+  return 'unknown'
 }
+
+/**
+ * TEI image used by the E2E suite. Resolved the same way production does —
+ * via `resolveTeiImage` — so CI/local hosts pick `cpu` on x86_64 and
+ * `cpu-arm64` on Apple Silicon. No digest pin here: first run `docker pull`s,
+ * subsequent runs reuse.
+ *
+ * E2E explicitly sets `gpu: null` so tests never require nvidia-smi or
+ * NVIDIA Container Toolkit. If a CI lane needs GPU coverage, extend this
+ * module with a separate `TEI_GPU_IMAGE` export.
+ */
+export const TEI_IMAGE: string = resolveTeiImage({
+  gpu: null,
+  arch: resolveArch(),
+  imageTag: '1.9',
+  override: undefined,
+}).ref
 
 /**
  * Stand-in for `findTeiBinary` when running E2E tests via Docker.
@@ -28,73 +46,23 @@ interface SubprocessLike {
  * TeiManager only requires that `findBinary()` succeeds.
  */
 export function dockerFindBinary(): string {
-  return 'docker'
+  return prodFindBinary()
 }
 
 /**
  * Drop-in replacement for `Bun.spawn` used by TeiManager during E2E tests.
- * Runs the TEI Docker image instead of invoking a native binary.
+ * Delegates to the production `createDockerSpawn` factory so the E2E path and
+ * the production path share one code path and one image reference policy.
  *
  * Container port 80 is mapped to the host port TeiManager allocated so that
  * the existing `waitForHealthy` (`GET http://localhost:$PORT/health`) and
  * `TeiClient` (`POST http://localhost:$PORT/embed`) paths work unchanged.
  */
+const dockerSpawn = createDockerSpawn(defaultDockerSpawnDeps(TEI_IMAGE, false))
+const _hfCacheHost = defaultHfCacheHost() // Force module-load to surface HF_HOME issues early.
+
 export function dockerSpawnFn(cmd: string[]): SubprocessLike {
-  const portIdx = cmd.indexOf('--port')
-  const modelIdx = cmd.indexOf('--model-id')
-  if (portIdx < 0 || modelIdx < 0) {
-    throw new Error(`dockerSpawnFn: missing --port or --model-id in cmd: ${cmd.join(' ')}`)
-  }
-  const hostPort = cmd[portIdx + 1]!
-  const modelId = cmd[modelIdx + 1]!
-
-  const containerId = execFileSync(
-    'docker',
-    [
-      'run',
-      '-d',
-      '--rm',
-      '-p',
-      `${hostPort}:80`,
-      '-v',
-      `${HF_CACHE_HOST}:/data`,
-      TEI_IMAGE,
-      '--model-id',
-      modelId,
-      '--port',
-      '80',
-    ],
-    { encoding: 'utf-8', timeout: 30_000 },
-  ).trim()
-
-  const waitProc = spawn('docker', ['wait', containerId], { stdio: ['ignore', 'pipe', 'ignore'] })
-  let codeOutput = ''
-  waitProc.stdout?.on('data', (chunk: Buffer) => {
-    codeOutput += chunk.toString()
-  })
-
-  const exited = new Promise<number>((resolve) => {
-    waitProc.on('close', () => {
-      const code = Number.parseInt(codeOutput.trim(), 10)
-      resolve(Number.isNaN(code) ? 0 : code)
-    })
-  })
-
-  return {
-    kill: () => {
-      try {
-        execFileSync('docker', ['stop', '-t', '2', containerId], {
-          stdio: 'ignore',
-          timeout: 15_000,
-        })
-      }
-      catch {
-        // Container may already be gone (idle-timeout race, crash, etc.).
-        // `exited` will still resolve via `docker wait` exit.
-      }
-    },
-    exited,
-  }
+  return dockerSpawn(cmd)
 }
 
 /**
@@ -102,11 +70,8 @@ export function dockerSpawnFn(cmd: string[]): SubprocessLike {
  * used by the E2E skip gate.
  */
 export function hasDocker(): boolean {
-  try {
-    execFileSync('docker', ['info'], { stdio: 'ignore', timeout: 5_000 })
-    return true
-  }
-  catch {
-    return false
-  }
+  return prodHasDocker()
 }
+
+// Suppress "declared but never used" warnings for the HF_HOME sanity probe.
+void _hfCacheHost

@@ -5,7 +5,6 @@ import { createDockerSpawn, hasDocker } from './docker-spawn'
 const TEST_IMAGE = 'ghcr.io/huggingface/text-embeddings-inference:89-1.9'
 
 function buildDeps(overrides: Partial<DockerSpawnDeps> = {}): DockerSpawnDeps {
-  const exited = Promise.resolve(0)
   return {
     execFileSyncFn: mock(() => 'container-id-abc\n'),
     spawnFn: mock(() => ({

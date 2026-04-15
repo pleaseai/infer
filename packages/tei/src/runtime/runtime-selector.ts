@@ -1,6 +1,6 @@
-import type { Arch } from './image-resolver'
 import type { SubprocessLike } from './docker-spawn'
 import type { GpuInfo } from './gpu-detect'
+import type { Arch } from './image-resolver'
 import { findTeiBinary } from '../binary'
 import { createDockerSpawn, defaultDockerSpawnDeps, dockerFindBinary, hasDocker } from './docker-spawn'
 import { detectGpu } from './gpu-detect'

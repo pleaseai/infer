@@ -1,3 +1,4 @@
+import type { Buffer } from 'node:buffer'
 import type { ChildProcess } from 'node:child_process'
 import { execFileSync, spawn as nodeSpawn } from 'node:child_process'
 import { homedir } from 'node:os'

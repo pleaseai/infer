@@ -77,10 +77,10 @@ infer.yaml (tei.runtime, tei.image, tei.imageTag)
 - [x] T012 createTeiManager 단위 테스트 (file: packages/tei/src/index.test.ts) — (a) runtime 없으면 기본(native) 동작, (b) runtime.mode=docker → spawnFn/findBinary가 docker 버전으로 주입됨 확인 (mocked TeiManager) (depends on T011)
 - [x] T013 server entrypoint 통합 (file: packages/server/src/index.ts) — `main()`에서 `selectRuntime(config, {platform, env})` 호출 → `createTeiManager({options, runtime})` 전달. `runtime.logLines` stdout 출력, resolve된 runtime/image를 기존 시작 배너에 추가 (depends on T001, T011)
 - [x] T014 server 시작 로그 단위 테스트 (file: packages/server/src/index.test.ts) — auto/native/docker 모드별 배너 포맷 검증 (mocked selectRuntime) (depends on T013)
-- [ ] T015 E2E docker-spawn.ts refactor (file: packages/server/test/e2e/docker-spawn.ts) — `dockerSpawnFn`/`dockerFindBinary`/`hasDocker`를 `@pleaseai/infer-tei/runtime`에서 재export로 축소. `TEI_IMAGE` 상수 제거, helpers.ts는 `resolveTeiImage({arch, imageTag:'1.9'})` 결과를 사용 (depends on T007, T011)
-- [ ] T016 E2E 회귀 실행 확인 (file: packages/server/test/e2e/*.e2e.test.ts) — `RUN_E2E=1 bun test test/e2e`로 전 E2E suite green. 무변경 (중복 제거만 검증) (depends on T015)
-- [ ] T017 README 업데이트 (file: README.md) — Configuration 섹션의 `tei.binary: text-embeddings-router # or docker` 제거, 신규 `tei.runtime: auto|native|docker`, `tei.image`, `tei.imageTag` 문서화. Roadmap의 "Docker mode" 체크 (depends on T013)
-- [ ] T018 tech-stack.md 업데이트 (file: .please/docs/knowledge/tech-stack.md) — External Binaries 섹션에 Docker runtime이 정식 경로임을 반영 (depends on T013)
+- [x] T015 E2E docker-spawn.ts refactor (file: packages/server/test/e2e/docker-spawn.ts) — `dockerSpawnFn`/`dockerFindBinary`/`hasDocker`를 `@pleaseai/infer-tei/runtime`에서 재export로 축소. `TEI_IMAGE` 상수 제거, helpers.ts는 `resolveTeiImage({arch, imageTag:'1.9'})` 결과를 사용 (depends on T007, T011)
+- [~] T016 E2E 회귀 실행 확인 (file: packages/server/test/e2e/*.e2e.test.ts) — `RUN_E2E=1 bun test test/e2e`로 전 E2E suite green. 무변경 (중복 제거만 검증) (depends on T015)
+- [x] T017 README 업데이트 (file: README.md) — Configuration 섹션의 `tei.binary: text-embeddings-router # or docker` 제거, 신규 `tei.runtime: auto|native|docker`, `tei.image`, `tei.imageTag` 문서화. Roadmap의 "Docker mode" 체크 (depends on T013)
+- [x] T018 tech-stack.md 업데이트 (file: .please/docs/knowledge/tech-stack.md) — External Binaries 섹션에 Docker runtime이 정식 경로임을 반영 (depends on T013)
 
 ## Dependencies
 
@@ -143,6 +143,9 @@ Parallel clusters:
 - 2026-04-15: T007, T008 — docker-spawn.ts production (createDockerSpawn factory, hasDocker probe) + 10 단위 테스트 (36/36 runtime green)
 - 2026-04-15: T009, T010 — runtime-selector.ts (auto/docker/native 분기, experimental warning) + 13 단위 테스트 (49/49 runtime green)
 - 2026-04-15: T011, T012 — createTeiManager factory 확장 (2-arg signature, runtime resolution 주입) + 5 단위 테스트 (98/98 tei package green)
+- 2026-04-15: T013, T014 — server index.ts selectRuntime 통합, startup.ts helper (resolveArch/formatStartupBanner) + 12 단위 테스트 (122/122 server green)
+- 2026-04-15: T015 — E2E docker-spawn.ts를 production `createDockerSpawn` re-export로 축소, digest 하드코딩 제거. T016은 Docker 필요로 사용자 수동 검증 대기
+- 2026-04-15: T017, T018 — README config 섹션 재작성 (tei.runtime/image/imageTag), Roadmap "Docker mode" 체크, tech-stack.md에 runtime selection 섹션 추가
 
 ## Decision Log
 

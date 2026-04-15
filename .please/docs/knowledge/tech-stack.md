@@ -36,10 +36,14 @@
 | `packages/ai-sdk` | `@pleaseai/infer-ai-sdk` | Vercel AI SDK provider |
 
 ## External Binaries (managed, not bundled)
-- `text-embeddings-router` — TEI binary (installed via Homebrew or Docker)
-- `llama-server` — llama.cpp server binary (installed via Homebrew)
+- `text-embeddings-router` — TEI binary (native runtime; installed via Homebrew)
+- TEI Docker images (`ghcr.io/huggingface/text-embeddings-inference`, default tag `1.9`) — auto-selected per host GPU compute capability + arch when `tei.runtime: auto|docker`
+- `llama-server` — llama.cpp server binary (installed via Homebrew; Docker variant out of scope)
+
+## TEI Runtime Selection (`tei.runtime`)
+Production code path mirrors the E2E test path via a shared `createDockerSpawn` factory in `@pleaseai/infer-tei`. `runtime-selector.ts` decides mode (native|docker|auto) once at server start, then injects the resolved `spawnFn`/`findBinary` into `TeiManager` — lifecycle (health check, idle timeout, crash recovery) is identical across modes. Default is `auto`: prefer Docker if available, otherwise fall back to the native binary.
 
 ## Deployment Targets
 - macOS (primary — Apple Silicon + Intel)
 - Linux (server deployments)
-- Docker (optional TEI mode)
+- Docker runtime (first-class path, not optional)
