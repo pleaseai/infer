@@ -155,4 +155,31 @@ Parallel clusters:
 
 ## Surprises & Discoveries
 
-<!-- 구현 중 발견 사항 기록 -->
+- `gh issue develop --checkout`이 **원격 main 기준**으로 브랜치를 생성하므로, 로컬 main에만 있는 커밋은 merge로 가져와야 한다. 로컬 main에 track 커밋을 먼저 만들고 issue branch를 생성하면 불일치가 발생한다.
+- TEI 공식 이미지 variant는 compute capability별로 10종이며, Blackwell(10.0/12.0/12.1)과 Turing(7.5)은 experimental 태그이다. Volta(7.0)는 공식 지원 외.
+- `Bun.spawn`의 반환 shape가 `TeiManager`의 `SubprocessLike`와 정확히 일치하지 않아 unknown cast가 필요했다 — 향후 Bun API 변경 시 brittle 포인트.
+
+## Outcomes & Retrospective
+
+### What Was Shipped
+- `tei.runtime: native | docker | auto` (default: `auto`) + `tei.image`/`tei.imageTag` override
+- GPU auto-detect via `nvidia-smi` compute capability → TEI image variant 매핑 (CPU/Turing/Ampere 8.0/8.6/Ada/Hopper/Blackwell)
+- Arch-aware CPU fallback (`cpu`/`cpu-arm64`)
+- `TeiManager` DI 슬롯을 production까지 노출하여 lifecycle 코드 무변경
+- Production + E2E가 동일한 `createDockerSpawn`/`resolveTeiImage`를 공유 (digest duplication 제거)
+- Config 스키마 regex 검증 (image/imageTag 주입 방어) + `hfCacheHost` 콜론 차단
+
+### What Went Well
+- Pure-function resolver(gpu-detect, image-resolver) 설계 덕에 DI 없이 compute cap × arch × override 전 조합을 단위 테스트로 커버
+- 기존 `TeiManager` DI가 잘 설계되어 있어 factory 확장 외 lifecycle 변경 불필요 (AC-10 자연스럽게 충족)
+- Review agent 파이프라인이 실질적인 gap(exited promise 미검증, useGpu 플러밍 미검증)을 포착 — 리뷰 투자 대비 ROI 높음
+
+### What Could Improve
+- `gh issue develop` 브랜치와 로컬 main 불일치를 세션 초반에 발견했으면 merge 절차 생략 가능. 차기 트랙은 **트랙 커밋을 push 후 issue branch 생성** 순으로 진행
+- FR-10에서 `console.warn` 문구가 스펙과 정확히 일치하지 않음 (현재는 stdout banner). 기능 동등하지만 스펙 문구 채택 시 drift 가능성 — 차후 보정
+- E2E Docker regression을 CI에 통합하는 별도 트랙 필요 (T016이 수동으로 남음)
+
+### Tech Debt Created
+- **`Bun.spawn` 타입 캐스트** (`runtime-selector.ts:43-44`): unknown을 통한 캐스트. Bun API 변경 시 런타임 오류 가능. 향후 `@types/bun`과 `SubprocessLike` 구조 정합성 개선 필요
+- **E2E `_hfCacheHost` probe 무효화** (`test/e2e/docker-spawn.ts`): `defaultHfCacheHost()`는 throw 경로가 없어 선언만 남은 코드. 정리 필요
+- **experimental variant 경고 채널 통합**: 현재는 `logLines` 한 경로만 사용. 스펙이 요구하는 `console.warn`을 별도로 발생시킬지 결정 필요
