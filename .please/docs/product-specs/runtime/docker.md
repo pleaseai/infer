@@ -61,7 +61,7 @@ The system MUST map NVIDIA compute capability to TEI image variant: 7.5 → turi
 
 ### Requirement: arch 기반 CPU fallback
 
-The system MUST fall back to arch-aware CPU variants when no GPU is detected: `linux/x86_64` → `cpu-{ver}`, `darwin/aarch64` or `linux/aarch64` → `cpu-arm64-{ver}`.
+The system MUST fall back to arch-aware CPU variants when no GPU is detected: `linux/x64` → `cpu-{ver}`, `darwin/arm64` or `linux/arm64` → `cpu-arm64-{ver}` (using Node/Bun `process.arch` values). Other Node arch values (e.g. `ia32`, `ppc64le`) are classified as `unknown` and must not be silently coerced to x64.
 
 #### Scenario: arch 기반 CPU fallback
 

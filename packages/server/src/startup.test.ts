@@ -23,6 +23,15 @@ describe('resolveArch', () => {
     expect(resolveArch('win32', 'x64')).toBe('unknown')
     expect(resolveArch('freebsd' as NodeJS.Platform, 'x64')).toBe('unknown')
   })
+
+  it('maps non-x64/arm64 archs to unknown (does NOT coerce to x64)', () => {
+    // ia32, ppc64le, s390x etc. are real Node arch values that TEI does not
+    // publish images for. Silently using linux-x64 would pull the wrong binary.
+    expect(resolveArch('linux', 'ia32')).toBe('unknown')
+    expect(resolveArch('linux', 'ppc64le')).toBe('unknown')
+    expect(resolveArch('linux', 's390x')).toBe('unknown')
+    expect(resolveArch('darwin', 'ia32')).toBe('unknown')
+  })
 })
 
 describe('formatStartupBanner', () => {

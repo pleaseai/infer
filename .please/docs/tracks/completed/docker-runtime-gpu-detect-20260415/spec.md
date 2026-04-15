@@ -28,7 +28,7 @@ infer 런타임이 현재는 `$PATH`의 네이티브 `text-embeddings-router` �
   - 10.0 → `100-{ver}` (experimental, 로그 경고)
   - 12.0 → `120-{ver}` (experimental, 로그 경고)
   - 12.1 → `121-{ver}` (experimental, 로그 경고)
-- [ ] FR-5: GPU 없음/조회 실패 시 arch 기반 CPU fallback — `linux/x86_64` → `cpu-{ver}`, `darwin/aarch64` 또는 `linux/aarch64` → `cpu-arm64-{ver}`
+- [ ] FR-5: GPU 없음/조회 실패 시 arch 기반 CPU fallback — `linux/x64` → `cpu-{ver}`, `darwin/arm64` 또는 `linux/arm64` → `cpu-arm64-{ver}` (Node/Bun `process.arch` 값 기준; 그 외 arch는 `unknown` → CPU x64 variant로 fallback하지 않고 명시적으로 `unknown` 처리)
 - [ ] FR-6: Volta(7.0), 지원 불가 compute cap 감지 시 명확한 에러 메시지와 함께 CPU fallback
 - [ ] FR-7: `runtime: docker` 모드에서 Docker 미설치/미동작 시 fast-fail with 액션 가능한 에러 ("Docker not available — install Docker Desktop or set `tei.runtime: native`")
 - [ ] FR-8: `TeiManager`에 Docker spawn 경로 노출 — 기존 DI 슬롯(`spawnFn`, `findBinary`)을 production에서 `DockerSpawn` 구현체로 주입 가능하도록 factory (`createTeiManager`)에 `runtime` 파라미터 추가

@@ -7,10 +7,20 @@ import type { Config } from './config'
  * the resolver treats as `linux-x64` for CPU fallback purposes.
  */
 export function resolveArch(platform: NodeJS.Platform, nodeArch: string): Arch {
-  if (platform === 'darwin')
-    return nodeArch === 'arm64' ? 'darwin-arm64' : 'darwin-x64'
-  if (platform === 'linux')
-    return nodeArch === 'arm64' ? 'linux-arm64' : 'linux-x64'
+  if (platform === 'darwin') {
+    if (nodeArch === 'arm64')
+      return 'darwin-arm64'
+    if (nodeArch === 'x64')
+      return 'darwin-x64'
+    return 'unknown'
+  }
+  if (platform === 'linux') {
+    if (nodeArch === 'arm64')
+      return 'linux-arm64'
+    if (nodeArch === 'x64')
+      return 'linux-x64'
+    return 'unknown'
+  }
   return 'unknown'
 }
 
