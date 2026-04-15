@@ -65,10 +65,10 @@ infer.yaml (tei.runtime, tei.image, tei.imageTag)
 
 - [x] T001 [P] config 스키마에 tei 섹션 추가 (file: packages/server/src/config.ts) — `teiSchema`(runtime: `'native'|'docker'|'auto'` default `auto`, image, imageTag default `'1.9'`), `parseConfig` 확장. 검증: 기존 테스트 전 통과 + tei 섹션 없는 yaml → `runtime:'auto'` 기본값
 - [x] T002 [P] config.ts tei 섹션 단위 테스트 (file: packages/server/src/config.test.ts) — runtime enum 유효/무효, 기본값, image/imageTag override, 기존 테스트 regression 확인. 커버리지 >80% (depends on T001)
-- [ ] T003 [P] gpu-detect 모듈 (file: packages/tei/src/runtime/gpu-detect.ts) — `detectGpu(execFn): { computeCap: string, count: number } | null`, 5초 타임아웃, nvidia-smi 결과 파싱, 실패 시 null
-- [ ] T004 [P] gpu-detect 단위 테스트 (file: packages/tei/src/runtime/gpu-detect.test.ts) — execFn 모킹: (a) nvidia-smi 없음 → null, (b) "8.9" 출력 → {computeCap:'8.9'}, (c) 복수 GPU → 첫 번째 사용, (d) 타임아웃 → null, (e) 에러 출력 → null (depends on T003)
-- [ ] T005 [P] image-resolver 모듈 (file: packages/tei/src/runtime/image-resolver.ts) — `resolveTeiImage({gpu, arch, imageTag, override}): { ref: string, isExperimental: boolean, reason: string }`. compute cap → variant 전 매핑, override 우선, arch fallback (`darwin-arm64`/`linux-arm64` → cpu-arm64, x86_64 → cpu). 순수 함수
-- [ ] T006 [P] image-resolver 단위 테스트 (file: packages/tei/src/runtime/image-resolver.test.ts) — 매핑 테이블 전체: 7.5 → `turing-1.9` (exp), 8.0 → `1.9`, 8.6 → `86-1.9`, 8.9 → `89-1.9`, 9.0 → `hopper-1.9`, 10.0/12.0/12.1 → exp, Volta 7.0 → cpu + reason, gpu null + darwin-arm64 → `cpu-arm64-1.9`, gpu null + linux-x64 → `cpu-1.9`, override 있으면 auto 우회. 커버리지 >80% (depends on T005)
+- [x] T003 [P] gpu-detect 모듈 (file: packages/tei/src/runtime/gpu-detect.ts) — `detectGpu(execFn): { computeCap: string, count: number } | null`, 5초 타임아웃, nvidia-smi 결과 파싱, 실패 시 null
+- [x] T004 [P] gpu-detect 단위 테스트 (file: packages/tei/src/runtime/gpu-detect.test.ts) — execFn 모킹: (a) nvidia-smi 없음 → null, (b) "8.9" 출력 → {computeCap:'8.9'}, (c) 복수 GPU → 첫 번째 사용, (d) 타임아웃 → null, (e) 에러 출력 → null (depends on T003)
+- [x] T005 [P] image-resolver 모듈 (file: packages/tei/src/runtime/image-resolver.ts) — `resolveTeiImage({gpu, arch, imageTag, override}): { ref: string, isExperimental: boolean, reason: string }`. compute cap → variant 전 매핑, override 우선, arch fallback (`darwin-arm64`/`linux-arm64` → cpu-arm64, x86_64 → cpu). 순수 함수
+- [x] T006 [P] image-resolver 단위 테스트 (file: packages/tei/src/runtime/image-resolver.test.ts) — 매핑 테이블 전체: 7.5 → `turing-1.9` (exp), 8.0 → `1.9`, 8.6 → `86-1.9`, 8.9 → `89-1.9`, 9.0 → `hopper-1.9`, 10.0/12.0/12.1 → exp, Volta 7.0 → cpu + reason, gpu null + darwin-arm64 → `cpu-arm64-1.9`, gpu null + linux-x64 → `cpu-1.9`, override 있으면 auto 우회. 커버리지 >80% (depends on T005)
 - [ ] T007 docker-spawn production 모듈 (file: packages/tei/src/runtime/docker-spawn.ts) — E2E `docker-spawn.ts`의 `dockerFindBinary`/`dockerSpawnFn`/`hasDocker` 로직을 이 파일로 이전. 이미지 reference를 인자로 받아 `--gpus all`(GPU 있을 때), `-v $HF_HOME:/data`, `-p $hostPort:80` 컨테이너 실행. `TEI_IMAGE` 상수 제거 (resolver가 주입) (depends on T005)
 - [ ] T008 docker-spawn 단위 테스트 (file: packages/tei/src/runtime/docker-spawn.test.ts) — `execFileSyncFn`, `spawnFn` DI 모킹. (a) `--gpus all` 포함 여부, (b) 볼륨 마운트 경로, (c) `--port 80` 컨테이너 내부 고정, (d) kill 시 docker stop 호출, (e) hasDocker 타임아웃 동작. 커버리지 >80% (depends on T007)
 - [ ] T009 runtime-selector 모듈 (file: packages/tei/src/runtime/runtime-selector.ts) — `selectRuntime({config, env, platform, dockerInfoFn, gpuDetectFn, findBinaryFn}): RuntimeResolution`. runtime=native → native DI, docker → docker 가용성 필수 + resolve image, auto → docker 시도 → 성공 시 GPU 감지 후 docker, 실패 시 native fallback. experimental variant 감지 시 `logLines`에 경고 추가 (depends on T003, T005, T007)
@@ -138,6 +138,8 @@ Parallel clusters:
 ## Progress
 
 - 2026-04-15: T001, T002 — config.ts에 tei 섹션 스키마 (runtime enum, image, imageTag default 1.9) 추가 및 9개 단위 테스트 통과 (21/21 green)
+- 2026-04-15: T003, T004 — gpu-detect.ts (nvidia-smi 래퍼, DI execFn, 5s timeout) + 7 단위 테스트 (7/7 green)
+- 2026-04-15: T005, T006 — image-resolver.ts (compute cap 8종 + Volta fallback + arch-based CPU fallback + override) + 19 단위 테스트 (26/26 green)
 
 ## Decision Log
 
