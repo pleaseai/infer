@@ -130,3 +130,29 @@ T002, T003 ────────────────────┬─→
 
 - **`stopping`-state race coverage**: the lifecycle suite confirms idle-timeout + respawn, but does not drive a request mid-`stopping`. Exercising that path requires deterministic timing control that real Docker cannot reliably provide — better suited to a unit-level test against a mocked spawnFn that intentionally stalls `kill()`.
 - **Auth E2E**: `startTestServer` supports an `authToken` option but no suite sets one. The `src/middleware/auth.test.ts` + `integration.test.ts` already cover middleware behavior; adding real-HTTP auth coverage has marginal value and is cheap to add later when a regression motivates it.
+
+## Outcomes & Retrospective
+
+### What Was Shipped
+
+- Opt-in E2E test infrastructure (`test/e2e/` in server and ai-sdk packages) running real TEI via Docker.
+- Reusable Docker spawn adapter (`dockerSpawnFn`, `dockerFindBinary`) and shared `startTestServer` helper.
+- 6 suites covering all `/v1/*` public endpoints, the AI SDK provider, and TeiManager's full idle-timeout + respawn lifecycle.
+- Turbo `test:e2e` task, package scripts that scope default `test` to `src/`, new CI job with HF model cache, and a README Development section.
+
+### What Went Well
+
+- `TeiManager`'s preexisting `spawnFn` / `findBinary` injection was exactly the right seam for Docker substitution — zero production code changes were needed. This is a strong validation of the injection design choice.
+- The pivot from the spec's native-binary plan to Docker happened without losing test fidelity: the full lifecycle still runs against a real process, just containerised.
+- Review cycle surfaced a genuine logic error (lifecycle test's port assertion was tautological) that neither type-check nor lint could catch.
+
+### What Could Improve
+
+- Spec reviewer should have flagged the nonexistent brew formula earlier; a simple `brew info` check during /please:plan would have caught it.
+- Cross-package test helpers (`docker-spawn` imported from ai-sdk via `../../../server/test/e2e/...`) work but feel fragile. Consider a shared `test-utils` package if E2E grows.
+- No mechanical enforcement of the ≤60s SC-4 target; next time, make perf budgets testable (e.g., fail if total `bun test test/e2e` wall time exceeds threshold).
+
+### Tech Debt Created
+
+- `@pleaseai/infer-ai-sdk`'s `createInferPlease` factory cannot accept a preconfigured `TeiManager`. E2E works around this by constructing `InferPleaseEmbeddingModel` directly; a follow-up should expose an optional `manager` parameter.
+- TEI image is pinned to the floating `cpu-latest` tag — reproducibility gap for debugging failed CI runs against an older image.
