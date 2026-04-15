@@ -1,0 +1,24 @@
+ARCHITECTURE.md
+  1f5540e98138a50f 98,102,104-107,169
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.2.8",
+  "base_commit_sha": "19cfa0a42a760394b9d5d93b7b035458b7b641ef",
+  "prompts": {
+    "1f5540e98138a50f": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "c4ca8cec-57f0-497b-a267-9cd7276598c1",
+        "model": "claude-opus-4-6"
+      },
+      "human_author": "Minsu Lee",
+      "messages": [],
+      "total_additions": 7,
+      "total_deletions": 3,
+      "accepted_lines": 7,
+      "overriden_lines": 0,
+      "messages_url": "https://usegitai.com/cas/cf820bfc94bf0c4911f929277b1f34692b18b0212cba7252bf02a6781cbb425b"
+    }
+  }
+}
