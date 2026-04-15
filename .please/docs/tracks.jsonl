@@ -1,4 +1,4 @@
 {"id":"tei-integration-20260412","type":"feature","status":"in_progress","phase":"implement","issue":"#1","created":"2026-04-12","section":"active"}
 {"id":"ai-gateway-endpoints-20260414","type":"feature","status":"review","phase":"review","issue":"#3","pr":"#4","created":"2026-04-14","section":"completed"}
 {"id":"e2e-tests-20260415","type":"chore","status":"review","phase":"review","issue":"#15","pr":"#16","created":"2026-04-15","section":"completed"}
-{"id":"docker-runtime-gpu-detect-20260415","type":"feature","status":"planned","phase":"spec","issue":"#17","created":"2026-04-15","section":"active"}
+{"id":"docker-runtime-gpu-detect-20260415","type":"feature","status":"in_progress","phase":"implement","issue":"#17","created":"2026-04-15","section":"active"}
