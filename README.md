@@ -263,6 +263,38 @@ infer-please/
 - [ ] Metrics & health check
 - [ ] Vercel AI Gateway fallback (local-first, cloud-backup)
 
+## Development
+
+### Running tests
+
+```bash
+bun run test           # Fast unit/integration tests (no Docker required)
+bun run test:e2e       # End-to-end tests against real TEI in Docker
+```
+
+The default `test` script runs only `src/*.test.ts` and uses in-process mocks for TEI — fast, Docker-free, safe to run on every commit.
+
+### E2E tests
+
+E2E tests live in `packages/{server,ai-sdk}/test/e2e/` and exercise the full request path against a real TEI backend running in Docker. They are **opt-in**: the default `bun run test` skips them.
+
+**Prerequisites:**
+
+- Docker Desktop (macOS/Windows) or Docker Engine (Linux), running
+- The first run pulls `ghcr.io/huggingface/text-embeddings-inference:cpu-latest` (~700 MB) and downloads the `sentence-transformers/all-MiniLM-L6-v2` model (~22 MB). Subsequent runs reuse both via the HuggingFace cache at `~/.cache/huggingface`.
+
+**Running locally:**
+
+```bash
+bun run test:e2e
+# or run a single suite:
+cd packages/server && RUN_E2E=1 bun test test/e2e/embeddings.e2e.test.ts
+```
+
+If Docker is not running, suites skip with an actionable message instead of failing. In CI (`CI=true`), a missing Docker is a hard failure.
+
+**How it works:** E2E tests inject a Docker-backed `spawnFn` into `TeiManager` in place of the default `Bun.spawn()` path. `TeiManager`'s spawn / health-check / idle-timeout / crash-recovery lifecycle runs unchanged, and `TeiClient` talks to TEI's native HTTP API at the container's mapped port. See `packages/server/test/e2e/docker-spawn.ts`.
+
 ## Part of Please Tools
 
 **infer-please** is part of the [Please Tools](https://pleaseai.dev) ecosystem.

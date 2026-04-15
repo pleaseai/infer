@@ -12,6 +12,10 @@
     "lint": {},
     "lint:fix": {},
     "check-types": {},
-    "test": {}
+    "test": {},
+    "test:e2e": {
+      "cache": false,
+      "env": ["RUN_E2E", "CI", "HF_HOME"]
+    }
   }
 }
