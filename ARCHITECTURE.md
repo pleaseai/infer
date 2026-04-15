@@ -95,12 +95,16 @@ For the HTTP API:
 
 | Module | Purpose | Depends On | Depended By |
 |--------|---------|-----------|-------------|
-| `src/index.ts` | Barrel export + `createTeiManager()` factory | all modules | `@pleaseai/infer-ai-sdk` |
+| `src/index.ts` | Barrel export + `createTeiManager(options, runtime?)` factory | all modules | `@pleaseai/infer-ai-sdk`, `infer-please` |
 | `src/tei-manager.ts` | TEI process lifecycle (spawn, health check, idle timeout, crash recovery) | `binary`, `port-pool`, `types` | `index` |
 | `src/tei-client.ts` | TEI HTTP API client (embed, rerank) | `types` | `index`, `ai-sdk` |
 | `src/port-pool.ts` | Dynamic port allocation/release (Set-based) | — | `tei-manager` |
-| `src/binary.ts` | `text-embeddings-router` binary discovery on $PATH | — | `tei-manager` |
+| `src/binary.ts` | `text-embeddings-router` binary discovery on $PATH | — | `tei-manager`, `runtime/runtime-selector` |
 | `src/types.ts` | Type definitions (TeiProcess, EmbedRequest, etc.) | — | all modules |
+| `src/runtime/gpu-detect.ts` | `nvidia-smi --query-gpu=compute_cap` wrapper with injectable exec (5s timeout) | — | `runtime/runtime-selector` |
+| `src/runtime/image-resolver.ts` | Pure function: GPU compute cap + arch + tag + override → TEI image reference | `gpu-detect` (type only) | `runtime/runtime-selector`, E2E helpers |
+| `src/runtime/docker-spawn.ts` | Docker-backed `SpawnFn` factory (production); `hasDocker` probe | — | `runtime/runtime-selector`, E2E helpers |
+| `src/runtime/runtime-selector.ts` | Decides native vs docker at start; resolves image, wires spawn/findBinary for `TeiManager` (NFR-1: one-shot detection) | `binary`, `runtime/*` | `index`, `infer-please` server |
 
 ### AI SDK Package Modules (`@pleaseai/infer-ai-sdk`)
 
@@ -162,6 +166,6 @@ For the HTTP API:
 
 ---
 
-_Last updated: 2026-04-14_
+_Last updated: 2026-04-15_
 
 _Key ADRs: None yet — use `/standards:adr` to record architectural decisions._
