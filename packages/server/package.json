@@ -28,7 +28,7 @@
     "@ai-sdk/openai-compatible": "^0.2",
     "@pleaseai/eslint-config": "latest",
     "@pleaseai/infer-ai-sdk": "workspace:*",
-    "ai": "^4",
+    "ai": "^6",
     "bun-types": "latest",
     "eslint": "^10",
     "openai": "^6",
