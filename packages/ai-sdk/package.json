@@ -14,7 +14,7 @@
     "test:e2e": "RUN_E2E=1 bun test test/e2e"
   },
   "peerDependencies": {
-    "ai": "^4"
+    "ai": "^6"
   },
   "dependencies": {
     "@ai-sdk/provider": "^1",
@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@pleaseai/eslint-config": "latest",
-    "ai": "^4",
+    "ai": "^6",
     "bun-types": "latest",
     "eslint": "^10",
     "typescript": "^6"
